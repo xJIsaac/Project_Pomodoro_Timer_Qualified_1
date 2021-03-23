@@ -20,15 +20,19 @@ function Pomodoro() {
   }
 
   function handleFocusTimeChange(action) {
-    action === "increase"
-      ? setFocusTime(Math.min(focusTime + 5, 60))
-      : setFocusTime(Math.max(focusTime - 5, 5));
+    if (!setIsTimerRunning) {
+      action === "increase"
+        ? setFocusTime(Math.min(focusTime + 5, 60))
+        : setFocusTime(Math.max(focusTime - 5, 5));
+    }
   }
 
   function handleBreakTimeChange(action) {
-    action === "increase"
-      ? setBreakTime(Math.min(breakTime + 1, 15))
-      : setBreakTime(Math.max(breakTime - 1, 1));
+    if (!setIsTimerRunning) {
+      action === "increase"
+        ? setBreakTime(Math.min(breakTime + 1, 15))
+        : setBreakTime(Math.max(breakTime - 1, 1));
+    }
   }
 
   return (
