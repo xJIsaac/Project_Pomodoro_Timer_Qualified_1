@@ -5,8 +5,8 @@ import useInterval from "../utils/useInterval";
 function Pomodoro() {
   // Timer starts out paused
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [focusTime, setFocusTime] = useState(25);
-  const [breakTime, setBreakTime] = useState(5);
+  const [focusTime, setFocusTime] = useState((1500000));
+  const [breakTime, setBreakTime] = useState(300000);
 
   useInterval(
     () => {
@@ -30,17 +30,23 @@ function Pomodoro() {
   function handleFocusTimeChange(action) {
     if (!isTimerRunning) {
       action === "increase"
-        ? setFocusTime(Math.min(focusTime + 5, 60))
-        : setFocusTime(Math.max(focusTime - 5, 5));
+        ? setFocusTime(Math.min(focusTime + 300000, 3600000))
+        : setFocusTime(Math.max(focusTime - 300000, 300000));
     }
   }
 
   function handleBreakTimeChange(action) {
     if (!isTimerRunning) {
       action === "increase"
-        ? setBreakTime(Math.min(breakTime + 1, 15))
-        : setBreakTime(Math.max(breakTime - 1, 1));
+        ? setBreakTime(Math.min(breakTime + 60000, 900000))
+        : setBreakTime(Math.max(breakTime - 60000, 60000));
     }
+  }
+
+  function millisecondsToMinAndSec(ms) {
+    var min = Math.floor(ms / 60000);
+    var sec = ((ms % 60000) / 1000).toFixed(0);
+    return min + ":" + (sec < 10 ? '0' : '') + sec;
   }
 
   return (
@@ -50,7 +56,7 @@ function Pomodoro() {
           <div className="input-group input-group-lg mb-2">
             <span className="input-group-text" data-testid="duration-focus">
               {/* TODO: Update this text to display the current focus session duration */}
-              Focus Duration: {focusTime}
+              Focus Duration: {millisecondsToMinAndSec(focusTime)}
             </span>
             <div className="input-group-append">
               {/* TODO: Implement decreasing focus duration and disable during a focus or break session */}
@@ -79,7 +85,7 @@ function Pomodoro() {
             <div className="input-group input-group-lg mb-2">
               <span className="input-group-text" data-testid="duration-break">
                 {/* TODO: Update this text to display the current break session duration */}
-                Break Duration: {breakTime}
+                Break Duration: {millisecondsToMinAndSec(breakTime)}
               </span>
               <div className="input-group-append">
                 {/* TODO: Implement decreasing break duration and disable during a focus or break session*/}
