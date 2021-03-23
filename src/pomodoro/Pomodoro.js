@@ -22,8 +22,8 @@ function Pomodoro() {
   function handleStopClick() {
     if (isTimerRunning) {
       setIsTimerRunning(false)
-      setFocusTime(25)
-      setBreakTime(5)
+      setFocusTime(1500000)
+      setBreakTime(300000)
     }
   }
 
