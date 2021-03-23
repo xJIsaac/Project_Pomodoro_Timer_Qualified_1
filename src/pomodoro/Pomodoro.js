@@ -20,7 +20,7 @@ function Pomodoro() {
   }
 
   function handleFocusTimeChange(action) {
-    if (!setIsTimerRunning) {
+    if (!isTimerRunning) {
       action === "increase"
         ? setFocusTime(Math.min(focusTime + 5, 60))
         : setFocusTime(Math.max(focusTime - 5, 5));
@@ -28,7 +28,7 @@ function Pomodoro() {
   }
 
   function handleBreakTimeChange(action) {
-    if (!setIsTimerRunning) {
+    if (!isTimerRunning) {
       action === "increase"
         ? setBreakTime(Math.min(breakTime + 1, 15))
         : setBreakTime(Math.max(breakTime - 1, 1));
