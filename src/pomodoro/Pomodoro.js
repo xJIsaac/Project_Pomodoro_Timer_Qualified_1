@@ -19,6 +19,14 @@ function Pomodoro() {
     setIsTimerRunning((prevState) => !prevState);
   }
 
+  function handleStopClick() {
+    if (isTimerRunning) {
+      setIsTimerRunning(false)
+      setFocusTime(25)
+      setBreakTime(5)
+    }
+  }
+
   function handleFocusTimeChange(action) {
     if (!isTimerRunning) {
       action === "increase"
@@ -124,6 +132,7 @@ function Pomodoro() {
               type="button"
               className="btn btn-secondary"
               title="Stop the session"
+              onClick={handleStopClick}
             >
               <span className="oi oi-media-stop" />
             </button>
