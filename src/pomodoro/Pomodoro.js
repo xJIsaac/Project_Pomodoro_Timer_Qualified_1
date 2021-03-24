@@ -5,8 +5,12 @@ import useInterval from "../utils/useInterval";
 function Pomodoro() {
   // Timer starts out paused
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [focusTime, setFocusTime] = useState((1500000));
-  const [breakTime, setBreakTime] = useState(300000);
+  const [focusTime, setFocusTime] = useState(1000 * 60 * 25);
+  const [breakTime, setBreakTime] = useState(1000 * 60 * 5);
+  const [timerDisplay, setTimerDisplay] = useState({
+    focus: focusTime,
+    break: breakTime,
+  });
 
   useInterval(
     () => {
@@ -31,14 +35,14 @@ function Pomodoro() {
     if (!isTimerRunning) {
       action === "increase"
         ? setFocusTime(Math.min(focusTime + 300000, 3600000))
-        : setFocusTime(Math.max(focusTime - 300000, 300000));
+        : setFocusTime(Math.max(focusTime - 300000, 1000 * 60 * 5));
     }
   }
 
   function handleBreakTimeChange(action) {
     if (!isTimerRunning) {
       action === "increase"
-        ? setBreakTime(Math.min(breakTime + 60000, 900000))
+        ? setBreakTime(Math.min(breakTime + 1000 * 60, 1000 * 60 * 15))
         : setBreakTime(Math.max(breakTime - 60000, 60000));
     }
   }
