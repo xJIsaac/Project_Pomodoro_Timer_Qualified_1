@@ -7,36 +7,36 @@ function Pomodoro() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [focusTime, setFocusTime] = useState(1000 * 60 * 25);
   const [breakTime, setBreakTime] = useState(1000 * 60 * 5);
-  const [timerDisplay, setTimerDisplay] = useState({
+  const [session, setSession] = useState({
     focus: focusTime,
     break: breakTime,
   });
   const display = {
-    remainingTime: timerDisplay.focus ? timerDisplay.focus : timerDisplay.break,
-    message: timerDisplay.focus ? "Focusing" : "On Break",
-    setTime: timerDisplay.focus ? focusTime : breakTime,
+    remainingTime: session.focus ? session.focus : session.break,
+    message: session.focus ? "Focusing" : "On Break",
+    setTime: session.focus ? focusTime : breakTime,
   };
 
   useInterval(
     () => {
       // ToDo: Implement what should happen when the timer is running
-      if (timerDisplay.focus && isTimerRunning) {
-        setTimerDisplay({
-          ...timerDisplay,
-          focus: timerDisplay.focus - 1000,
+      if (session.focus && isTimerRunning) {
+        setSession({
+          ...session,
+          focus: session.focus - 1000,
         });
-      } else if (timerDisplay.break && isTimerRunning) {
-        console.log("Focus Timer: " + timerDisplay.focus);
-        setTimerDisplay({
-          ...timerDisplay,
-          break: timerDisplay.break - 1000,
+      } else if (session.break && isTimerRunning) {
+        console.log("Focus Timer: " + session.focus);
+        setSession({
+          ...session,
+          break: session.break - 1000,
         });
       } else {
-        console.log("Break Timer: " + timerDisplay.break);
         console.log("hello");
-        setTimerDisplay({
-          focus: 1000 * 60 * 25,
-          break: 1000 * 60 * 5,
+        console.log("Break Timer: " + session.break);
+        setSession({
+          focus: 1000,
+          break: 1000,
         });
       }
     },
@@ -51,7 +51,7 @@ function Pomodoro() {
     if (isTimerRunning) {
       setIsTimerRunning(false);
       console.log("you clicked stop");
-      setTimerDisplay({
+      setSession({
         focus: focusTime,
         break: breakTime,
       });
