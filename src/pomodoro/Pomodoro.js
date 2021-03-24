@@ -11,6 +11,11 @@ function Pomodoro() {
     focus: focusTime,
     break: breakTime,
   });
+  const display = {
+    remainingTime: timerDisplay.focus ? timerDisplay.focus : timerDisplay.break,
+    message: timerDisplay.focus ? "Focusing" : "On Break",
+    setTime: timerDisplay.focus ? focusTime : breakTime,
+  };
 
   useInterval(
     () => {
@@ -47,10 +52,10 @@ function Pomodoro() {
     }
   }
 
-  function millisecondsToMinAndSec(ms) {
+  function toMinAndSec(ms) {
     var min = Math.floor(ms / 60000);
     var sec = ((ms % 60000) / 1000).toFixed(0);
-    return min + ":" + (sec < 10 ? '0' : '') + sec;
+    return min + ":" + (sec < 10 ? "0" : "") + sec;
   }
 
   return (
@@ -60,7 +65,7 @@ function Pomodoro() {
           <div className="input-group input-group-lg mb-2">
             <span className="input-group-text" data-testid="duration-focus">
               {/* TODO: Update this text to display the current focus session duration */}
-              Focus Duration: {millisecondsToMinAndSec(focusTime)}
+              Focus Duration: {toMinAndSec(focusTime)}
             </span>
             <div className="input-group-append">
               {/* TODO: Implement decreasing focus duration and disable during a focus or break session */}
@@ -89,7 +94,7 @@ function Pomodoro() {
             <div className="input-group input-group-lg mb-2">
               <span className="input-group-text" data-testid="duration-break">
                 {/* TODO: Update this text to display the current break session duration */}
-                Break Duration: {millisecondsToMinAndSec(breakTime)}
+                Break Duration: {toMinAndSec(breakTime)}
               </span>
               <div className="input-group-append">
                 {/* TODO: Implement decreasing break duration and disable during a focus or break session*/}
@@ -154,10 +159,12 @@ function Pomodoro() {
         <div className="row mb-2">
           <div className="col">
             {/* TODO: Update message below to include current session (Focusing or On Break) and total duration */}
-            <h2 data-testid="session-title">Focusing for 25:00 minutes</h2>
+            <h2 data-testid="session-title">
+              {display.message} for {toMinAndSec(display.setTime)} minutes
+            </h2>
             {/* TODO: Update message below to include time remaining in the current session */}
             <p className="lead" data-testid="session-sub-title">
-              25:00 remaining
+              {toMinAndSec(display.remainingTime)} remaining
             </p>
           </div>
         </div>
