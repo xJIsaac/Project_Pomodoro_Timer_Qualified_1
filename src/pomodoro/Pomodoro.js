@@ -30,9 +30,12 @@ function Pomodoro() {
 
   function handleStopClick() {
     if (isTimerRunning) {
-      setIsTimerRunning(false)
-      setFocusTime(1500000)
-      setBreakTime(300000)
+      setIsTimerRunning(false);
+      console.log("you clicked stop");
+      setTimerDisplay({
+        focus: focusTime,
+        break: breakTime,
+      });
     }
   }
 
