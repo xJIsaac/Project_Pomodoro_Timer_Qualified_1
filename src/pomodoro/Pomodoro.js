@@ -20,6 +20,25 @@ function Pomodoro() {
   useInterval(
     () => {
       // ToDo: Implement what should happen when the timer is running
+      if (timerDisplay.focus && isTimerRunning) {
+        setTimerDisplay({
+          ...timerDisplay,
+          focus: timerDisplay.focus - 1000,
+        });
+      } else if (timerDisplay.break && isTimerRunning) {
+        console.log("Focus Timer: " + timerDisplay.focus);
+        setTimerDisplay({
+          ...timerDisplay,
+          break: timerDisplay.break - 1000,
+        });
+      } else {
+        console.log("Break Timer: " + timerDisplay.break);
+        console.log("hello");
+        setTimerDisplay({
+          focus: 1000 * 60 * 25,
+          break: 1000 * 60 * 5,
+        });
+      }
     },
     isTimerRunning ? 1000 : null
   );
