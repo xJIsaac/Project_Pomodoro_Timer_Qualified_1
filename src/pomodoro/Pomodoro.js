@@ -39,7 +39,10 @@ function Pomodoro() {
           new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
         }
         if (session.totalTime === 1000) {
-          setSession({ ...session, totalTime: focusDuration + breakDuration + 2000 });
+          setSession({
+            ...session,
+            totalTime: focusDuration + breakDuration + 2000,
+          });
         }
       }
     },
@@ -52,12 +55,12 @@ function Pomodoro() {
 
   function handleStopClick() {
     if (isTimerRunning) {
+      setSession({
+        ...session,
+        totalTime: focusDuration + breakDuration + 2000,
+      });
       setIsTimerRunning(false);
       console.log("you clicked stop");
-      setSession({
-        focus: focusTime,
-        break: breakTime,
-      });
     }
   }
 
