@@ -5,8 +5,8 @@ import useInterval from "../utils/useInterval";
 function Pomodoro() {
   // Timer starts out paused
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [focusTime, setFocusTime] = useState(1000 * 60 * 25);
-  const [breakTime, setBreakTime] = useState(1000 * 60 * 5);
+  const [focusDuration, setFocusDuration] = useState(3000);
+  const [breakDuration, setBreakDuration] = useState(3000);
   const [session, setSession] = useState({
     focus: focusTime,
     break: breakTime,
@@ -58,19 +58,19 @@ function Pomodoro() {
     }
   }
 
-  function handleFocusTimeChange(action) {
+  function handleFocusDurationChange(action) {
     if (!isTimerRunning) {
       action === "increase"
-        ? setFocusTime(Math.min(focusTime + 300000, 3600000))
-        : setFocusTime(Math.max(focusTime - 300000, 1000 * 60 * 5));
+        ? setFocusDuration(Math.min(focusDuration + 300000, 3600000))
+        : setFocusDuration(Math.max(focusDuration - 300000, 1000 * 60 * 5));
     }
   }
 
-  function handleBreakTimeChange(action) {
+  function handleBreakDurationChange(action) {
     if (!isTimerRunning) {
       action === "increase"
-        ? setBreakTime(Math.min(breakTime + 1000 * 60, 1000 * 60 * 15))
-        : setBreakTime(Math.max(breakTime - 60000, 60000));
+        ? setBreakDuration(Math.min(breakDuration + 1000 * 60, 1000 * 60 * 15))
+        : setBreakDuration(Math.max(breakDuration - 60000, 60000));
     }
   }
 
@@ -87,7 +87,7 @@ function Pomodoro() {
           <div className="input-group input-group-lg mb-2">
             <span className="input-group-text" data-testid="duration-focus">
               {/* TODO: Update this text to display the current focus session duration */}
-              Focus Duration: {toMinAndSec(focusTime)}
+              Focus Duration: {toMinAndSec(focusDuration)}
             </span>
             <div className="input-group-append">
               {/* TODO: Implement decreasing focus duration and disable during a focus or break session */}
@@ -95,7 +95,7 @@ function Pomodoro() {
                 type="button"
                 className="btn btn-secondary"
                 data-testid="decrease-focus"
-                onClick={() => handleFocusTimeChange("decrease")}
+                onClick={() => handleFocusDurationChange("decrease")}
               >
                 <span className="oi oi-minus" />
               </button>
@@ -104,7 +104,7 @@ function Pomodoro() {
                 type="button"
                 className="btn btn-secondary"
                 data-testid="increase-focus"
-                onClick={() => handleFocusTimeChange("increase")}
+                onClick={() => handleFocusDurationChange("increase")}
               >
                 <span className="oi oi-plus" />
               </button>
@@ -116,7 +116,7 @@ function Pomodoro() {
             <div className="input-group input-group-lg mb-2">
               <span className="input-group-text" data-testid="duration-break">
                 {/* TODO: Update this text to display the current break session duration */}
-                Break Duration: {toMinAndSec(breakTime)}
+                Break Duration: {toMinAndSec(breakDuration)}
               </span>
               <div className="input-group-append">
                 {/* TODO: Implement decreasing break duration and disable during a focus or break session*/}
@@ -124,7 +124,7 @@ function Pomodoro() {
                   type="button"
                   className="btn btn-secondary"
                   data-testid="decrease-break"
-                  onClick={() => handleBreakTimeChange("decrease")}
+                  onClick={() => handleBreakDurationChange("decrease")}
                 >
                   <span className="oi oi-minus" />
                 </button>
@@ -133,7 +133,7 @@ function Pomodoro() {
                   type="button"
                   className="btn btn-secondary"
                   data-testid="increase-break"
-                  onClick={() => handleBreakTimeChange("increase")}
+                  onClick={() => handleBreakDurationChange("increase")}
                 >
                   <span className="oi oi-plus" />
                 </button>
