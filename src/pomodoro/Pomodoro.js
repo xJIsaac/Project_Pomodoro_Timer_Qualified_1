@@ -8,36 +8,39 @@ function Pomodoro() {
   const [focusDuration, setFocusDuration] = useState(3000);
   const [breakDuration, setBreakDuration] = useState(3000);
   const [session, setSession] = useState({
-    focus: focusTime,
-    break: breakTime,
+    totalTime: focusDuration + breakDuration + 2000,
+    isFocusing: function () {
+      return this.totalTime > breakDuration + 1000 ? true : false;
+    },
+    message: function () {
+      return this.isFocusing() ? "Focusing" : "On Break";
+    },
+    remainingTime: function () {
+      return this.isFocusing() ? this.focusT() : this.breakT();
+    },
+    focusT: function () {
+      return this.totalTime - breakDuration - 2000;
+    },
+    breakT: function () {
+      return this.totalTime - 1000;
+    },
+    setTime: function () {
+      return this.isFocusing() ? focusDuration : breakDuration;
+    },
   });
-  const display = {
-    remainingTime: session.focus ? session.focus : session.break,
-    message: session.focus ? "Focusing" : "On Break",
-    setTime: session.focus ? focusTime : breakTime,
-  };
 
   useInterval(
     () => {
       // ToDo: Implement what should happen when the timer is running
-      if (session.focus && isTimerRunning) {
-        setSession({
-          ...session,
-          focus: session.focus - 1000,
-        });
-      } else if (session.break && isTimerRunning) {
-        console.log("Focus Timer: " + session.focus);
-        setSession({
-          ...session,
-          break: session.break - 1000,
-        });
-      } else {
-        console.log("hello");
-        console.log("Break Timer: " + session.break);
-        setSession({
-          focus: 1000,
-          break: 1000,
-        });
+      if (isTimerRunning) {
+        setSession({ ...session, totalTime: session.totalTime - 1000 });
+        console.log(session.message() + (session.remainingTime() - 1000));
+        if (session.focusT() === 1000 || session.breakT() === 1000) {
+          new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
+        }
+        if (session.totalTime === 1000) {
+          setSession({ ...session, totalTime: focusDuration + breakDuration + 2000 });
+        }
       }
     },
     isTimerRunning ? 1000 : null
@@ -182,11 +185,11 @@ function Pomodoro() {
           <div className="col">
             {/* TODO: Update message below to include current session (Focusing or On Break) and total duration */}
             <h2 data-testid="session-title">
-              {display.message} for {toMinAndSec(display.setTime)} minutes
+              {session.message()} for {toMinAndSec(session.setTime())} minutes
             </h2>
             {/* TODO: Update message below to include time remaining in the current session */}
             <p className="lead" data-testid="session-sub-title">
-              {toMinAndSec(display.remainingTime)} remaining
+              {toMinAndSec(session.remainingTime())} remaining
             </p>
           </div>
         </div>
