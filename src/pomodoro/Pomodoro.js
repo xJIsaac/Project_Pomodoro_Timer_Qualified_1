@@ -16,16 +16,22 @@ function Pomodoro() {
       return this.isFocusing() ? "Focusing" : "On Break";
     },
     remainingTime: function () {
-      return this.isFocusing() ? this.focusT() : this.breakT();
+      return this.isFocusing() ? this.focusTime() : this.breakTime();
     },
-    focusT: function () {
+    focusTime: function () {
       return this.totalTime - breakDuration - 2000;
     },
-    breakT: function () {
+    breakTime: function () {
       return this.totalTime - 1000;
     },
     setTime: function () {
       return this.isFocusing() ? focusDuration : breakDuration;
+    },
+    elapsedTimePercentage: function () {
+      const result = this.isFocusing()
+        ? (focusDuration - this.focusTime()) / focusDuration
+        : (breakDuration - this.breakTime()) / breakDuration;
+      return result * 100;
     },
   });
 
@@ -35,7 +41,7 @@ function Pomodoro() {
       if (isTimerRunning) {
         setSession({ ...session, totalTime: session.totalTime - 1000 });
         console.log(session.message() + (session.remainingTime() - 1000));
-        if (session.focusT() === 1000 || session.breakT() === 1000) {
+        if (session.focusTime() === 1000 || session.breakTime() === 1000) {
           new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
         }
         if (session.totalTime === 1000) {
@@ -204,8 +210,8 @@ function Pomodoro() {
                 role="progressbar"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                aria-valuenow="0" // TODO: Increase aria-valuenow as elapsed time increases
-                style={{ width: "0%" }} // TODO: Increase width % as elapsed time increases
+                aria-valuenow={session.elapsedTimePercentage()} // TODO: Increase aria-valuenow as elapsed time increases
+                style={{ width: `${session.elapsedTimePercentage()}%` }} // TODO: Increase width % as elapsed time increases
               />
             </div>
           </div>
