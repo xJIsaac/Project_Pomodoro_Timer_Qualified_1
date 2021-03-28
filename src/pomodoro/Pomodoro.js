@@ -5,10 +5,10 @@ import useInterval from "../utils/useInterval";
 function Pomodoro() {
   // Timer starts out paused
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [focusDuration, setFocusDuration] = useState(3000);
-  const [breakDuration, setBreakDuration] = useState(3000);
+  const [focusDuration, setFocusDuration] = useState(1500000);
+  const [breakDuration, setBreakDuration] = useState(300000);
   const [session, setSession] = useState({
-    totalTime: focusDuration + breakDuration + 2000,
+    totalTime: 0,
     isFocusing() {
       return this.totalTime > breakDuration + 1000 ? true : false;
     },
@@ -34,6 +34,24 @@ function Pomodoro() {
       return result * 100;
     },
   });
+  const display = {
+    setTime() {
+      return session.isFocusing() ? focusDuration : breakDuration;
+    },
+    elapsedTimePercentage() {
+      const result = session.isFocusing()
+        ? (focusDuration - session.focusTime()) / focusDuration
+        : (breakDuration - session.breakTime()) / breakDuration;
+      return result * 100;
+    },
+  };
+
+  function updateTotalTime() {
+    setSession({
+      ...session,
+      totalTime: focusDuration + breakDuration + 2000,
+    });
+  }
 
   useInterval(
     () => {
@@ -75,8 +93,6 @@ function Pomodoro() {
         ...session,
         totalTime: focusDuration + breakDuration + 2000,
       });
-      console.log("you clicked stop");
-      console.log(session.inProgress);
     }
   }
 
@@ -86,6 +102,7 @@ function Pomodoro() {
         ? setFocusDuration(Math.min(focusDuration + 300000, 3600000))
         : setFocusDuration(Math.max(focusDuration - 300000, 1000 * 60 * 5));
     }
+    updateTotalTime();
   }
 
   function handleBreakDurationChange(action) {
@@ -94,12 +111,13 @@ function Pomodoro() {
         ? setBreakDuration(Math.min(breakDuration + 1000 * 60, 1000 * 60 * 15))
         : setBreakDuration(Math.max(breakDuration - 60000, 60000));
     }
+    updateTotalTime();
   }
 
   function toMinAndSec(ms) {
     var min = Math.floor(ms / 60000);
     var sec = ((ms % 60000) / 1000).toFixed(0);
-    return min + ":" + (sec < 10 ? "0" : "") + sec;
+    return (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
   }
 
   return (
@@ -204,7 +222,7 @@ function Pomodoro() {
           <div className="col">
             {/* TODO: Update message below to include current session (Focusing or On Break) and total duration */}
             <h2 data-testid="session-title">
-              {session.message()} for {toMinAndSec(session.setTime())} minutes
+              {session.message()} for {toMinAndSec(display.setTime())} minutes
             </h2>
             {/* TODO: Update message below to include time remaining in the current session */}
             <p className="lead" data-testid="session-sub-title">
@@ -220,8 +238,8 @@ function Pomodoro() {
                 role="progressbar"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                aria-valuenow={session.elapsedTimePercentage()} // TODO: Increase aria-valuenow as elapsed time increases
-                style={{ width: `${session.elapsedTimePercentage()}%` }} // TODO: Increase width % as elapsed time increases
+                aria-valuenow={display.elapsedTimePercentage()} // TODO: Increase aria-valuenow as elapsed time increases
+                style={{ width: `${display.elapsedTimePercentage()}%` }} // TODO: Increase width % as elapsed time increases
               />
             </div>
           </div>
