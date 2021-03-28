@@ -12,22 +12,25 @@ function Pomodoro() {
     isFocusing: function () {
       return this.totalTime > breakDuration + 1000 ? true : false;
     },
-    message: function () {
+    message() {
       return this.isFocusing() ? "Focusing" : "On Break";
     },
-    remainingTime: function () {
+    remainingTime() {
       return this.isFocusing() ? this.focusTime() : this.breakTime();
     },
-    focusTime: function () {
+    focusTime() {
       return this.totalTime - breakDuration - 2000;
     },
-    breakTime: function () {
+    breakTime() {
       return this.totalTime - 1000;
     },
-    setTime: function () {
+    setTime() {
       return this.isFocusing() ? focusDuration : breakDuration;
     },
-    elapsedTimePercentage: function () {
+    display() {
+      return this.inProgress ? "" : "none"
+    },
+    elapsedTimePercentage() {
       const result = this.isFocusing()
         ? (focusDuration - this.focusTime()) / focusDuration
         : (breakDuration - this.breakTime()) / breakDuration;
