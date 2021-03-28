@@ -9,7 +9,7 @@ function Pomodoro() {
   const [breakDuration, setBreakDuration] = useState(3000);
   const [session, setSession] = useState({
     totalTime: focusDuration + breakDuration + 2000,
-    isFocusing: function () {
+    isFocusing() {
       return this.totalTime > breakDuration + 1000 ? true : false;
     },
     message() {
@@ -27,9 +27,6 @@ function Pomodoro() {
     setTime() {
       return this.isFocusing() ? focusDuration : breakDuration;
     },
-    display() {
-      return this.inProgress ? "" : "none"
-    },
     elapsedTimePercentage() {
       const result = this.isFocusing()
         ? (focusDuration - this.focusTime()) / focusDuration
@@ -42,21 +39,29 @@ function Pomodoro() {
     () => {
       // ToDo: Implement what should happen when the timer is running
       if (isTimerRunning) {
-        setSession({ ...session, totalTime: session.totalTime - 1000 });
-        console.log(session.message() + (session.remainingTime() - 1000));
-        if (session.focusTime() === 1000 || session.breakTime() === 1000) {
-          new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
-        }
-        if (session.totalTime === 1000) {
-          setSession({
-            ...session,
-            totalTime: focusDuration + breakDuration + 2000,
-          });
-        }
+        setSession({
+          ...session,
+          totalTime: session.totalTime - 1000,
+        });
       }
     },
     isTimerRunning ? 1000 : null
   );
+
+  if (isTimerRunning) {
+    document.querySelector("#display").style.display = "";
+  }
+
+  if (session.focusTime() === 0 || session.breakTime() === 0) {
+    new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
+  }
+
+  if (session.totalTime === 0) {
+    setSession({
+      ...session,
+      totalTime: focusDuration + breakDuration + 2000,
+    });
+  }
 
   function playPause() {
     setIsTimerRunning((prevState) => !prevState);
@@ -64,12 +69,14 @@ function Pomodoro() {
 
   function handleStopClick() {
     if (isTimerRunning) {
+      setIsTimerRunning(false);
+      document.querySelector("#display").style.display = "none";
       setSession({
         ...session,
         totalTime: focusDuration + breakDuration + 2000,
       });
-      setIsTimerRunning(false);
       console.log("you clicked stop");
+      console.log(session.inProgress);
     }
   }
 
@@ -191,7 +198,7 @@ function Pomodoro() {
           </div>
         </div>
       </div>
-      <div>
+      <div id="display" style={{ display: "none" }}>
         {/* TODO: This area should show only when a focus or break session is running or pauses */}
         <div className="row mb-2">
           <div className="col">
