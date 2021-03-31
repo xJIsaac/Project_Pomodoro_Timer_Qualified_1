@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "../utils/class-names";
 import useInterval from "../utils/useInterval";
 
@@ -8,110 +8,114 @@ function Pomodoro() {
   const [focusDuration, setFocusDuration] = useState(1500000);
   const [breakDuration, setBreakDuration] = useState(300000);
   const [session, setSession] = useState({
-    totalTime: 0,
+    focusTime: focusDuration,
+    breakTime: breakDuration,
     isFocusing() {
-      return this.totalTime > breakDuration + 1000 ? true : false;
+      return this.focusTime >= 0 ? true : false;
     },
-    message() {
-      return this.isFocusing() ? "Focusing" : "On Break";
+    reduceTime() {
+      this.isFocusing()
+        ? setSession({ ...this, focusTime: this.focusTime - 1000 })
+        : setSession({ ...this, breakTime: this.breakTime - 1000 });
     },
-    remainingTime() {
-      return this.isFocusing() ? this.focusTime() : this.breakTime();
+    focusEnded() {
+      return this.focusTime === 0 && this.isFocusing();
     },
-    focusTime() {
-      return this.totalTime - breakDuration - 2000;
-    },
-    breakTime() {
-      return this.totalTime - 1000;
-    },
-    setTime() {
-      return this.isFocusing() ? focusDuration : breakDuration;
-    },
-    elapsedTimePercentage() {
-      const result = this.isFocusing()
-        ? (focusDuration - this.focusTime()) / focusDuration
-        : (breakDuration - this.breakTime()) / breakDuration;
-      return result * 100;
+    breakEnded() {
+      return this.breakTime === 0;
     },
   });
+
   const display = {
     setTime() {
       return session.isFocusing() ? focusDuration : breakDuration;
     },
     elapsedTimePercentage() {
       const result = session.isFocusing()
-        ? (focusDuration - session.focusTime()) / focusDuration
-        : (breakDuration - session.breakTime()) / breakDuration;
+        ? (focusDuration - session.focusTime) / focusDuration
+        : (breakDuration - session.breakTime) / breakDuration;
       return result * 100;
     },
+    message() {
+      return session.isFocusing() ? "Focusing" : "On Break";
+    },
+    remainingTime() {
+      return session.isFocusing() ? session.focusTime : session.breakTime;
+    },
   };
-
-  function updateTotalTime() {
-    setSession({
-      ...session,
-      totalTime: focusDuration + breakDuration + 2000,
-    });
-  }
 
   useInterval(
     () => {
       // ToDo: Implement what should happen when the timer is running
       if (isTimerRunning) {
-        setSession({
-          ...session,
-          totalTime: session.totalTime - 1000,
-        });
+        session.reduceTime();
       }
     },
     isTimerRunning ? 1000 : null
   );
 
+  // Show timer display once timer is running
   if (isTimerRunning) {
     document.querySelector("#display").style.display = "";
   }
 
-  if (session.focusTime() === 0 || session.breakTime() === 0) {
+  // Play Sound
+  if (session.focusEnded() || session.breakEnded()) {
     new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
   }
 
-  if (session.totalTime === 0) {
-    setSession({
-      ...session,
-      totalTime: focusDuration + breakDuration + 2000,
-    });
+  // Restart Timer
+  if (session.breakTime === -1000) {
+    updateSession();
   }
 
   function playPause() {
     setIsTimerRunning((prevState) => !prevState);
   }
 
+  function updateSession() {
+    setSession({
+      ...session,
+      focusTime: focusDuration,
+      breakTime: breakDuration,
+    });
+  }
+
+  useEffect(() => {
+    console.log("focus" + focusDuration);
+    setSession({
+      ...session,
+      focusTime: focusDuration,
+      breakTime: breakDuration,
+    });
+  }, [focusDuration, breakDuration]);
+
   function handleStopClick() {
     if (isTimerRunning) {
       setIsTimerRunning(false);
       document.querySelector("#display").style.display = "none";
-      setSession({
-        ...session,
-        totalTime: focusDuration + breakDuration + 2000,
-      });
+      updateSession();
     }
   }
 
   function handleFocusDurationChange(action) {
     if (!isTimerRunning) {
-      action === "increase"
-        ? setFocusDuration(Math.min(focusDuration + 300000, 3600000))
-        : setFocusDuration(Math.max(focusDuration - 300000, 1000 * 60 * 5));
+      setFocusDuration(
+        action === "increase"
+          ? Math.min(focusDuration + 300000, 3600000)
+          : Math.max(focusDuration - 300000, 300000)
+      );
     }
-    updateTotalTime();
   }
 
   function handleBreakDurationChange(action) {
     if (!isTimerRunning) {
-      action === "increase"
-        ? setBreakDuration(Math.min(breakDuration + 1000 * 60, 1000 * 60 * 15))
-        : setBreakDuration(Math.max(breakDuration - 60000, 60000));
+      setBreakDuration(
+        action === "increase"
+          ? Math.min(breakDuration + 60000, 900000)
+          : Math.max(breakDuration - 60000, 60000)
+      );
     }
-    updateTotalTime();
   }
 
   function toMinAndSec(ms) {
@@ -222,11 +226,11 @@ function Pomodoro() {
           <div className="col">
             {/* TODO: Update message below to include current session (Focusing or On Break) and total duration */}
             <h2 data-testid="session-title">
-              {session.message()} for {toMinAndSec(display.setTime())} minutes
+              {display.message()} for {toMinAndSec(display.setTime())} minutes
             </h2>
             {/* TODO: Update message below to include time remaining in the current session */}
             <p className="lead" data-testid="session-sub-title">
-              {toMinAndSec(session.remainingTime())} remaining
+              {toMinAndSec(display.remainingTime())} remaining
             </p>
           </div>
         </div>
