@@ -82,7 +82,6 @@ function Pomodoro() {
   }
 
   useEffect(() => {
-    console.log("focus" + focusDuration);
     setSession({
       ...session,
       focusTime: focusDuration,
