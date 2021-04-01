@@ -16,16 +16,16 @@ function Pomodoro() {
     isFocusing() {
       return this.focusTime >= 0 ? true : false;
     },
-    reduceTime() {
-      this.isFocusing()
-        ? setSession({ ...this, focusTime: this.focusTime - 1000 })
-        : setSession({ ...this, breakTime: this.breakTime - 1000 });
-    },
     focusEnded() {
       return this.focusTime === 0 && this.isFocusing();
     },
     breakEnded() {
       return this.breakTime === 0;
+    },
+    reduceTime() {
+      this.isFocusing()
+        ? setSession({ ...this, focusTime: this.focusTime - 1000 })
+        : setSession({ ...this, breakTime: this.breakTime - 1000 });
     },
   });
 
@@ -39,9 +39,8 @@ function Pomodoro() {
     isTimerRunning ? 1000 : null
   );
 
-  // Show timer display once timer is running
-  if (isTimerRunning) {
-    document.querySelector("#display").style.display = "";
+  function playPause() {
+    setIsTimerRunning((prevState) => !prevState);
   }
 
   // Play Sound
@@ -54,10 +53,7 @@ function Pomodoro() {
     updateSession();
   }
 
-  function playPause() {
-    setIsTimerRunning((prevState) => !prevState);
-  }
-
+  // Uses to reset Session state when timer ends or stop is clicked
   function updateSession() {
     setSession({
       ...session,
@@ -66,6 +62,7 @@ function Pomodoro() {
     });
   }
 
+  // Update Session state when changes to any duration occur
   useEffect(() => {
     setSession({
       ...session,
@@ -74,6 +71,7 @@ function Pomodoro() {
     });
   }, [focusDuration, breakDuration]);
 
+  // Stop button handles stopping timer, turning off display and resetting session state
   function handleStopClick() {
     if (isTimerRunning) {
       setIsTimerRunning(false);
@@ -134,6 +132,7 @@ function Pomodoro() {
         session={session}
         focusDuration={focusDuration}
         breakDuration={breakDuration}
+        isTimerRunning={isTimerRunning}
       />
     </div>
   );
