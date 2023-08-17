@@ -64,11 +64,11 @@ function Pomodoro() {
 
   // Update Session state when changes to any duration occur
   useEffect(() => {
-    setSession({
-      ...session,
+    setSession((prevSession) => ({
+      ...prevSession,
       focusTime: focusDuration,
       breakTime: breakDuration,
-    });
+    }));
   }, [focusDuration, breakDuration]);
 
   // Stop button handles stopping timer, turning off display and resetting session state
