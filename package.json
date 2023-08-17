@@ -3,12 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@svgr/plugin-svgo": "^8.1.0",
+    "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "10.4.7",
     "@testing-library/user-event": "12.0.11",
+    "css-select": "^5.1.0",
+    "fsevents": "^2.3.2",
+    "minimist": "^1.2.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3"
+    "react-scripts": "^5.0.1",
+    "svgo": "^3.0.2",
+    "webpack-dev-server": "^4.15.1"
   },
   "scripts": {
     "start": "react-scripts start",
