@@ -2,24 +2,24 @@ import React from "react";
 import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
 function Display(props) {
-  const { session, focusDuration, breakDuration, timer_is_running } = props;
-  const display = {
-    setTime() {
-      return session.isFocusing() ? focusDuration : breakDuration;
-    },
-    elapsedTimePercentage() {
-      const result = session.isFocusing()
-        ? (focusDuration - session.focusTime) / focusDuration
-        : (breakDuration - session.breakTime) / breakDuration;
-      return result * 100;
-    },
-    message() {
-      return session.isFocusing() ? "Focusing" : "On Break";
-    },
-    remainingTime() {
-      return session.isFocusing() ? session.focusTime : session.breakTime;
-    },
-  };
+  const { focusDuration, breakDuration, timer_is_running } = props;
+  // const display = {
+  //   setTime() {
+  //     return session.isFocusing() ? focusDuration : breakDuration;
+  //   },
+  //   elapsedTimePercentage() {
+  //     const result = session.isFocusing()
+  //       ? (focusDuration - session.focusTime) / focusDuration
+  //       : (breakDuration - session.breakTime) / breakDuration;
+  //     return result * 100;
+  //   },
+  //   message() {
+  //     return session.isFocusing() ? "Focusing" : "On Break";
+  //   },
+  //   remainingTime() {
+  //     return session.isFocusing() ? session.focusTime : session.breakTime;
+  //   },
+  // };
 
   // Show timer display once timer is running
   if (timer_is_running) {
@@ -33,11 +33,11 @@ function Display(props) {
         <div className="col">
           {/* TODO: Update message below to include current session (Focusing or On Break) and total duration */}
           <h2 data-testid="session-title">
-            {display.message()} for {toMinAndSec(display.setTime())} minutes
+            {/* {display.message()} for {toMinAndSec(display.setTime())} minutes */}
           </h2>
           {/* TODO: Update message below to include time remaining in the current session */}
           <p className="lead" data-testid="session-sub-title">
-            {toMinAndSec(display.remainingTime())} remaining
+            {/* {toMinAndSec(display.remainingTime())} remaining */}
           </p>
         </div>
       </div>
@@ -49,8 +49,8 @@ function Display(props) {
               role="progressbar"
               aria-valuemin="0"
               aria-valuemax="100"
-              aria-valuenow={display.elapsedTimePercentage()} // TODO: Increase aria-valuenow as elapsed time increases
-              style={{ width: `${display.elapsedTimePercentage()}%` }} // TODO: Increase width % as elapsed time increases
+              // aria-valuenow={display.elapsedTimePercentage()} // TODO: Increase aria-valuenow as elapsed time increases
+              // style={{ width: `${display.elapsedTimePercentage()}%` }} // TODO: Increase width % as elapsed time increases
             />
           </div>
         </div>

@@ -7,62 +7,55 @@ import Display from "./display";
 function Pomodoro() {
   // Timer starts out paused
   const [timer_is_running, set_timer_is_running] = useState(false);
+  const [focusTime, setFocusTime] = useState(1500000);
+  const [breakTime, setBreakTime] = useState(300000);
 
-  const [session, setSession] = useState({
-    focusTime: 1500000,
-    breakTime: 300000,
-    isFocusing() {
-      return this.focusTime >= 0 ? true : false;
-    },
-    focusEnded() {
-      return this.focusTime === 0 && this.isFocusing();
-    },
-    breakEnded() {
-      return this.breakTime === 0;
-    },
-    reduceTime() {
-      this.isFocusing()
-        ? setSession({ ...this, focusTime: this.focusTime - 1000 })
-        : setSession({ ...this, breakTime: this.breakTime - 1000 });
-    },
-  });
+  const isFocusing = () => {
+    return focusTime >= 0 ? true : false;
+  };
 
-  const currentFocusTime = session.focusTime;
-  const currentBreakTime = session.breakTime;
+  const focusEnded = () => {
+    return focusTime === 0 && isFocusing();
+  };
 
-  const updateSessionTime = (type, newTime) => {
-    setSession((prevSession) => ({
-      ...prevSession,
-      [type]: newTime,
-    }));
+  const breakEnded = () => {
+    return breakTime === 0;
+  };
+
+  const reduceTime = () => {
+    if (isFocusing()) {
+      setFocusTime(focusTime - 1000);
+    } else {
+      setBreakTime(breakTime - 1000);
+    }
   };
 
   function handleTimeChange(action, type) {
     if (!timer_is_running) {
       if (type === "Focus") {
         const timeDelta = action === "increase" ? 300000 : -300000;
-        const newFocusTime = Math.max(currentFocusTime + timeDelta, 0);
-        updateSessionTime("focusTime", newFocusTime);
+        const newFocusTime = Math.max(focusTime + timeDelta, 0);
+        setFocusTime(newFocusTime);
       }
       if (type === "Break") {
         const timeDelta = action === "increase" ? 60000 : -60000;
-        const newBreakTime = Math.max(currentBreakTime + timeDelta, 0);
-        updateSessionTime("breakTime", newBreakTime);
+        const newBreakTime = Math.max(breakTime + timeDelta, 0);
+        setBreakTime(newBreakTime);
       }
     }
   }
 
-  useInterval(
-    () => {
-      // ToDo: Implement what should happen when the timer is running
-      if (timer_is_running) {
-        session.reduceTime();
-      }
-    },
-    timer_is_running ? 1000 : null
-  );
+  // useInterval(
+  //   () => {
+  //     // ToDo: Implement what should happen when the timer is running
+  //     if (timer_is_running) {
+  //       session.reduceTime();
+  //     }
+  //   },
+  //   timer_is_running ? 1000 : null
+  // );
 
-  function playPause() {
+  function handlePlayPause() {
     set_timer_is_running((prevState) => {
       return !prevState;
     });
@@ -74,9 +67,9 @@ function Pomodoro() {
   // }
 
   // Restart Timer
-  if (session.breakTime === -1000) {
-    updateSession();
-  }
+  // if (session.breakTime === -1000) {
+  //   updateSession();
+  // }
 
   // Uses to reset Session state when timer ends or stop is clicked
   function updateSession() {
@@ -111,12 +104,12 @@ function Pomodoro() {
         <Duration
           handleTimeChange={handleTimeChange}
           durationType={"Focus"}
-          time={currentFocusTime}
+          time={focusTime}
         />
         <Duration
           handleTimeChange={handleTimeChange}
           durationType={"Break"}
-          time={currentBreakTime}
+          time={breakTime}
         />
       </div>
       <div className="row">
@@ -131,7 +124,7 @@ function Pomodoro() {
               className="btn btn-primary"
               data-testid="play-pause"
               title="Start or pause timer"
-              onClick={playPause}
+              onClick={handlePlayPause}
             >
               <span
                 className={classNames({
@@ -154,9 +147,8 @@ function Pomodoro() {
         </div>
       </div>
       <Display
-        session={session}
-        focusDuration={currentFocusTime}
-        breakDuration={currentBreakTime}
+        focusDuration={focusTime}
+        breakDuration={breakTime}
         timer_is_running={timer_is_running}
       />
     </div>
