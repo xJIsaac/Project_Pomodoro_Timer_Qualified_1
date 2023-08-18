@@ -9,6 +9,24 @@ function Pomodoro() {
   const [timer_is_running, set_timer_is_running] = useState(false);
   const [focusTime, setFocusTime] = useState(1500000);
   const [breakTime, setBreakTime] = useState(300000);
+  const [session, setSession] = useState({
+    focus: 0,
+    break: 0,
+  });
+
+  useEffect(() => {
+    setSession((prevSession) => ({
+      ...prevSession,
+      focus: focusTime,
+    }));
+  }, [focusTime]);
+
+  useEffect(() => {
+    setSession((prevSession) => ({
+      ...prevSession,
+      break: breakTime,
+    }));
+  }, [breakTime]);
 
   const focusEnded = () => {
     return focusTime === 0 && isFocusing();
