@@ -10,10 +10,6 @@ function Pomodoro() {
   const [focusTime, setFocusTime] = useState(1500000);
   const [breakTime, setBreakTime] = useState(300000);
 
-  const isFocusing = () => {
-    return focusTime >= 0 ? true : false;
-  };
-
   const focusEnded = () => {
     return focusTime === 0 && isFocusing();
   };
@@ -22,13 +18,25 @@ function Pomodoro() {
     return breakTime === 0;
   };
 
+  const isFocusing = () => focusTime >= 0;
+
   const reduceTime = () => {
     if (isFocusing()) {
-      setFocusTime(focusTime - 1000);
+      setFocusTime((prevFocusTime) => prevFocusTime - 1000);
     } else {
-      setBreakTime(breakTime - 1000);
+      setBreakTime((prevBreakTime) => prevBreakTime - 1000);
     }
   };
+
+  useInterval(
+    () => {
+      if (timer_is_running) {
+        reduceTime();
+        console.log(focusTime, breakTime);
+      }
+    },
+    timer_is_running ? 1000 : null
+  );
 
   function handleTimeChange(action, type) {
     if (!timer_is_running) {
@@ -44,16 +52,6 @@ function Pomodoro() {
       }
     }
   }
-
-  // useInterval(
-  //   () => {
-  //     // ToDo: Implement what should happen when the timer is running
-  //     if (timer_is_running) {
-  //       session.reduceTime();
-  //     }
-  //   },
-  //   timer_is_running ? 1000 : null
-  // );
 
   function handlePlayPause() {
     set_timer_is_running((prevState) => {
