@@ -38,18 +38,17 @@ function Pomodoro() {
     timer_is_running ? 1000 : null
   );
 
-  function handleTimeChange(action, type) {
+  function handleFocusTimeChange(action) {
     if (!timer_is_running) {
-      if (type === "Focus") {
-        const timeDelta = action === "increase" ? 300000 : -300000;
-        const newFocusTime = Math.max(focusTime + timeDelta, 0);
-        setFocusTime(newFocusTime);
-      }
-      if (type === "Break") {
-        const timeDelta = action === "increase" ? 60000 : -60000;
-        const newBreakTime = Math.max(breakTime + timeDelta, 0);
-        setBreakTime(newBreakTime);
-      }
+      const newFocusTime = Math.max(eval(`${focusTime} ${action} 300000`), 0); // change by 5 minutes in milliseconds
+      setFocusTime(newFocusTime);
+    }
+  }
+
+  function handleBreakTimeChange(action) {
+    if (!timer_is_running) {
+      const newBreakTime = Math.max(eval(`${breakTime} ${action} 60000`), 0); // change by 1 minute in milliseconds
+      setBreakTime(newBreakTime);
     }
   }
 
@@ -100,12 +99,12 @@ function Pomodoro() {
     <div className="pomodoro">
       <div className="row">
         <Duration
-          handleTimeChange={handleTimeChange}
+          handleTimeChange={handleFocusTimeChange}
           durationType={"Focus"}
           time={focusTime}
         />
         <Duration
-          handleTimeChange={handleTimeChange}
+          handleTimeChange={handleBreakTimeChange}
           durationType={"Break"}
           time={breakTime}
         />

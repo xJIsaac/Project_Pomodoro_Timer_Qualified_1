@@ -17,7 +17,7 @@ function duration(props) {
             type="button"
             className="btn btn-secondary"
             data-testid="decrease"
-            onClick={() => handleTimeChange("decrease", durationType)}
+            onClick={() => handleTimeChange("-")}
           >
             <span className="oi oi-minus" />
           </button>
@@ -26,7 +26,7 @@ function duration(props) {
             type="button"
             className="btn btn-secondary"
             data-testid="increase"
-            onClick={() => handleTimeChange("increase", durationType)}
+            onClick={() => handleTimeChange("+")}
           >
             <span className="oi oi-plus" />
           </button>
