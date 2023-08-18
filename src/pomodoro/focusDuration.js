@@ -2,9 +2,9 @@ import React from "react";
 import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
 function FocusDuration(props) {
-  const { focusDuration, isTimerRunning, setFocusDuration } = props;
+  const { focusDuration, timer_is_running, setFocusDuration } = props;
   const handleFocusDurationChange = (action) => {
-    if (!isTimerRunning) {
+    if (!timer_is_running) {
       setFocusDuration(
         action === "increase"
           ? Math.min(focusDuration + 300000, 3600000)

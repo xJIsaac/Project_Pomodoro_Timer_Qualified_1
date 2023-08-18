@@ -7,7 +7,7 @@ import Display from "./display";
 
 function Pomodoro() {
   // Timer starts out paused
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timer_is_running, set_timer_is_running] = useState(false);
   const [focusDuration, setFocusDuration] = useState(1500000);
   const [breakDuration, setBreakDuration] = useState(300000);
   const [session, setSession] = useState({
@@ -32,15 +32,17 @@ function Pomodoro() {
   useInterval(
     () => {
       // ToDo: Implement what should happen when the timer is running
-      if (isTimerRunning) {
+      if (timer_is_running) {
         session.reduceTime();
       }
     },
-    isTimerRunning ? 1000 : null
+    timer_is_running ? 1000 : null
   );
 
   function playPause() {
-    setIsTimerRunning((prevState) => !prevState);
+    set_timer_is_running((prevState) => {
+      return !prevState;
+    });
   }
 
   // Play Sound
@@ -73,8 +75,8 @@ function Pomodoro() {
 
   // Stop button handles stopping timer, turning off display and resetting session state
   function handleStopClick() {
-    if (isTimerRunning) {
-      setIsTimerRunning(false);
+    if (timer_is_running) {
+      set_timer_is_running(false);
       document.querySelector("#display").style.display = "none";
       updateSession();
     }
@@ -85,12 +87,12 @@ function Pomodoro() {
       <div className="row">
         <FocusDuration
           focusDuration={focusDuration}
-          isTimerRunning={isTimerRunning}
+          timer_is_running={timer_is_running}
           setFocusDuration={setFocusDuration}
         />
         <BreakDuration
           breakDuration={breakDuration}
-          isTimerRunning={isTimerRunning}
+          timer_is_running={timer_is_running}
           setBreakDuration={setBreakDuration}
         />
       </div>
@@ -111,8 +113,8 @@ function Pomodoro() {
               <span
                 className={classNames({
                   oi: true,
-                  "oi-media-play": !isTimerRunning,
-                  "oi-media-pause": isTimerRunning,
+                  "oi-media-play": !timer_is_running,
+                  "oi-media-pause": timer_is_running,
                 })}
               />
             </button>
@@ -132,7 +134,7 @@ function Pomodoro() {
         session={session}
         focusDuration={focusDuration}
         breakDuration={breakDuration}
-        isTimerRunning={isTimerRunning}
+        timer_is_running={timer_is_running}
       />
     </div>
   );

@@ -2,9 +2,9 @@ import React from "react";
 import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
 function BreakDuration(props) {
-  const { breakDuration, isTimerRunning, setBreakDuration } = props;
+  const { breakDuration, timer_is_running, setBreakDuration } = props;
   const handleBreakDurationChange = (action) => {
-    if (!isTimerRunning) {
+    if (!timer_is_running) {
       setBreakDuration(
         action === "increase"
           ? Math.min(breakDuration + 60000, 900000)

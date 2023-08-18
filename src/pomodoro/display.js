@@ -2,7 +2,7 @@ import React from "react";
 import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
 function Display(props) {
-  const {session, focusDuration, breakDuration, isTimerRunning} = props;
+  const { session, focusDuration, breakDuration, timer_is_running } = props;
   const display = {
     setTime() {
       return session.isFocusing() ? focusDuration : breakDuration;
@@ -22,7 +22,7 @@ function Display(props) {
   };
 
   // Show timer display once timer is running
-  if (isTimerRunning) {
+  if (timer_is_running) {
     document.querySelector("#display").style.display = "";
   }
 
