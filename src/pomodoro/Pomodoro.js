@@ -46,14 +46,11 @@ function Pomodoro() {
     }));
   };
 
-  useInterval(
-    () => {
-      if (timer_is_running) {
-        reduceTime();
-      }
-    },
-    timer_is_running ? 1000 : null
-  );
+  useInterval(() => {
+    if (timer_is_running) {
+      reduceTime();
+    }
+  }, timer_is_running && 1000);
 
   function handleFocusTimeChange(action) {
     if (!timer_is_running) {
