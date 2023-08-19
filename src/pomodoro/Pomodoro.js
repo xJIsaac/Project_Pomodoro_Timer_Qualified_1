@@ -12,6 +12,7 @@ function Pomodoro() {
   const [session, setSession] = useState({
     focus: 0,
     break: 0,
+    inProgress: false,
   });
 
   useEffect(() => {
@@ -66,11 +67,23 @@ function Pomodoro() {
     }
   }
 
-  function handlePlayPause() {
+  function handlePlayPauseClick() {
     set_timer_is_running((prevState) => {
       return !prevState;
     });
+    setSession((prevSession) => ({
+      ...prevSession,
+      inProgress: true,
+    }));
   }
+
+  const [displayVisible, setDisplayVisible] = useState(false);
+
+  useEffect(() => {
+    if (timer_is_running && session.inProgress) {
+      setDisplayVisible(true);
+    }
+  }, [timer_is_running, session.inProgress]);
 
   // Play Sound
   // if (session.focusEnded() || session.breakEnded()) {
@@ -104,7 +117,7 @@ function Pomodoro() {
   function handleStopClick() {
     if (timer_is_running) {
       set_timer_is_running(false);
-      document.querySelector("#display").style.display = "none";
+      setDisplayVisible(false);
       updateSession();
     }
   }
@@ -135,7 +148,7 @@ function Pomodoro() {
               className="btn btn-primary"
               data-testid="play-pause"
               title="Start or pause timer"
-              onClick={handlePlayPause}
+              onClick={handlePlayPauseClick}
             >
               <span
                 className={classNames({
@@ -158,14 +171,16 @@ function Pomodoro() {
         </div>
       </div>
       {/* Progress Bar */}
-      <SessionDisplay
-        currentFocusTime={session.focus}
-        currentBreakTime={session.break}
-        focusTime={focusTime}
-        breakTime={breakTime}
-        timer_is_running={timer_is_running}
-        inFocus={inFocus}
-      />
+      {displayVisible && (
+        <SessionDisplay
+          currentFocusTime={session.focus}
+          currentBreakTime={session.break}
+          focusTime={focusTime}
+          breakTime={breakTime}
+          timer_is_running={timer_is_running}
+          inFocus={inFocus}
+        />
+      )}
     </div>
   );
 }
