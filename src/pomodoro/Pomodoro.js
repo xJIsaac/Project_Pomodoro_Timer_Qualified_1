@@ -29,28 +29,27 @@ function Pomodoro() {
   }, [breakTime]);
 
   const focusEnded = () => {
-    return focusTime === 0 && isFocusing();
+    return focusTime === 0 && inFocus();
   };
 
   const breakEnded = () => {
     return breakTime === 0;
   };
 
-  const isFocusing = () => focusTime >= 0;
+  const inFocus = () => focusTime >= 0;
 
   const reduceTime = () => {
-    if (isFocusing()) {
-      setFocusTime((prevFocusTime) => prevFocusTime - 1000);
-    } else {
-      setBreakTime((prevBreakTime) => prevBreakTime - 1000);
-    }
+    const newTime = inFocus() ? session.focus - 1000 : session.break - 1000;
+    setSession((prevSession) => ({
+      ...prevSession,
+      [inFocus() ? "focus" : "break"]: newTime,
+    }));
   };
 
   useInterval(
     () => {
       if (timer_is_running) {
         reduceTime();
-        console.log(focusTime, breakTime);
       }
     },
     timer_is_running ? 1000 : null
