@@ -157,10 +157,14 @@ function Pomodoro() {
           </div>
         </div>
       </div>
-      <Display
-        focusDuration={focusTime}
-        breakDuration={breakTime}
+      {/* Progress Bar */}
+      <SessionDisplay
+        currentFocusTime={session.focus}
+        currentBreakTime={session.break}
+        focusTime={focusTime}
+        breakTime={breakTime}
         timer_is_running={timer_is_running}
+        inFocus={inFocus}
       />
     </div>
   );
