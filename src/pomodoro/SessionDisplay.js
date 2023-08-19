@@ -18,6 +18,7 @@ function SessionDisplay(props) {
     ? (focusTime - currentFocusTime) / focusTime
     : (breakTime - currentBreakTime) / breakTime;
 
+  console.log(`In Focus: `, inFocus());
   return (
     <div id="display">
       <div className="row mb-2">

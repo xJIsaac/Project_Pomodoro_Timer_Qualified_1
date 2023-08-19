@@ -30,21 +30,25 @@ function Pomodoro() {
   }, [breakTime]);
 
   const focusEnded = () => {
-    return focusTime === 0 && inFocus();
+    return session.focus === 0 && inFocus();
   };
 
   const breakEnded = () => {
-    return breakTime === 0;
+    return session.break === 0;
   };
 
-  const inFocus = () => focusTime >= 0;
+  const inFocus = () => session.focus >= 0;
 
   const reduceTime = () => {
-    const newTime = inFocus() ? session.focus - 1000 : session.break - 1000;
+    console.log(focusEnded());
+    const newTime = !focusEnded()
+      ? Math.max(session.focus - 1000, 0)
+      : Math.max(session.break - 1000, 0);
     setSession((prevSession) => ({
       ...prevSession,
       [inFocus() ? "focus" : "break"]: newTime,
     }));
+    console.log(session);
   };
 
   useInterval(() => {
@@ -80,45 +84,36 @@ function Pomodoro() {
   const [displayVisible, setDisplayVisible] = useState(false);
 
   useEffect(() => {
-    if (timer_is_running && session.inProgress) {
+    if (session.inProgress) {
       setDisplayVisible(true);
     }
   }, [timer_is_running, session.inProgress]);
 
   // Play Sound
-  // if (session.focusEnded() || session.breakEnded()) {
+  // if (focusEnded() || breakEnded()) {
   //   new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
   // }
 
   // Restart Timer
-  // if (session.breakTime === -1000) {
-  //   updateSession();
-  // }
-
-  // Uses to reset Session state when timer ends or stop is clicked
-  function updateSession() {
-    // setSession({
-    //   ...session,
-    //   focusTime: focusDuration,
-    //   breakTime: breakDuration,
-    // });
+  if (session.breakTime === -1000) {
+    setSession((prevSession) => ({
+      ...prevSession,
+      focus: focusTime,
+      break: breakTime,
+    }));
   }
-
-  // Update Session state when changes to any duration occur
-  // useEffect(() => {
-  //   setSession((prevSession) => ({
-  //     ...prevSession,
-  //     focusTime: focusDuration,
-  //     breakTime: breakDuration,
-  //   }));
-  // }, [focusDuration, breakDuration]);
 
   // Stop button handles stopping timer, turning off display and resetting session state
   function handleStopClick() {
     if (timer_is_running) {
       set_timer_is_running(false);
       setDisplayVisible(false);
-      updateSession();
+      setSession((prevSession) => ({
+        ...prevSession,
+        focus: focusTime,
+        break: breakTime,
+        inProgress: false,
+      }));
     }
   }
 
