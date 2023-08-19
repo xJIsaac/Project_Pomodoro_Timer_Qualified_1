@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import classNames from "../utils/class-names";
 import useInterval from "../utils/useInterval";
 import Duration from "./duration";
-import Display from "./display";
+import SessionDisplay from "./SessionDisplay";
 
 function Pomodoro() {
   // Timer starts out paused
