@@ -11,43 +11,20 @@ function SessionDisplay(props) {
     inFocus,
   } = props;
 
-  // const display = {
-  //   setTime() {
-  //     return inFocus ? focusDuration : breakDuration;
-  //   },
-  //   elapsedTimePercentage() {
-  //     const result = inFocus
-  //       ? (focusDuration - session.focusTime) / focusDuration
-  //       : (breakDuration - session.breakTime) / breakDuration;
-  //     return result * 100;
-  //   },
-
-  //   remainingTime() {
-  //     return inFocus ? focusDuration : breakDuration;
-  //   },
-  // };
-
-  // Show timer display once timer is running
-  if (timer_is_running) {
-    document.querySelector("#display").style.display = "";
-  }
-
   const userSetTime = inFocus ? focusTime : breakTime;
-
   const currentSessionTime = inFocus ? currentFocusTime : currentBreakTime;
-
   const sessionType = inFocus ? "Focusing" : "On Break";
+  const elapsedTimePercentage = inFocus
+    ? (focusTime - currentFocusTime) / focusTime
+    : (breakTime - currentBreakTime) / breakTime;
 
   return (
-    <div id="display" style={{ display: "none" }}>
-      {/* TODO: This area should show only when a focus or break session is running or pauses */}
+    <div id="display">
       <div className="row mb-2">
         <div className="col">
-          {/* TODO: Update message below to include current session (Focusing or On Break) and total duration */}
           <h2 data-testid="session-title">
             {sessionType} for {toMinAndSec(userSetTime)} minutes
           </h2>
-          {/* TODO: Update message below to include time remaining in the current session */}
           <p className="lead" data-testid="session-sub-title">
             {toMinAndSec(currentSessionTime)} remaining
           </p>
@@ -61,8 +38,8 @@ function SessionDisplay(props) {
               role="progressbar"
               aria-valuemin="0"
               aria-valuemax="100"
-              // aria-valuenow={display.elapsedTimePercentage()} // TODO: Increase aria-valuenow as elapsed time increases
-              // style={{ width: `${display.elapsedTimePercentage()}%` }} // TODO: Increase width % as elapsed time increases
+              aria-valuenow={elapsedTimePercentage * 100}
+              style={{ width: `${elapsedTimePercentage * 100}%` }}
             />
           </div>
         </div>
