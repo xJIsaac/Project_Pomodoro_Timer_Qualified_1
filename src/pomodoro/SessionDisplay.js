@@ -13,10 +13,6 @@ function SessionDisplay(props) {
   } = props;
 
   const userSetTime = sessionType === "focus" ? focusTime : breakTime;
-  console.log(`User set Time: ${userSetTime}`);
-  const currentSessionTime =
-    sessionType === "focus" ? currentFocusTime : currentBreakTime;
-  // const sessionType = sessionType ? "Focusing" : "On Break";
 
   function calculateElapsedTimePercentage(currentTime, totalSessionTime) {
     const remainingTime = totalSessionTime - currentTime;
