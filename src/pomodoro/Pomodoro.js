@@ -6,10 +6,11 @@ import SessionDisplay from "./SessionDisplay";
 
 function Pomodoro() {
   // Timer starts out paused
-  const [timer_is_running, set_timer_is_running] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
   const [focusTime, setFocusTime] = useState(3);
   const [breakTime, setBreakTime] = useState(3);
   const [currentTime, setCurrentTime] = useState(focusTime * 60); // in seconds
+  const [sessionType, setSessionType] = useState("focus"); // 'focus' or 'break'
   const [currentFocusTime, setCurrentFocusTime] = useState(0);
   const [currentBreakTime, setCurrentBreakTime] = useState(0);
   // const [session, setSession] = useState({
@@ -43,37 +44,38 @@ function Pomodoro() {
   useEffect(() => {
     let interval;
 
-    if (timer_is_running && currentTime > 0) {
+    if (isRunning && currentTime > 0) {
       interval = setInterval(() => {
         setCurrentTime((prevTime) => prevTime - 1);
       }, 1000);
-    } else if (timer_is_running && currentTime === 0) {
+    } else if (isRunning && currentTime === 0) {
       // Switch between focus and break times
-      if (focusTime === currentTime / 60) {
+      if (sessionType === "focus") {
+        setSessionType("break");
         setCurrentTime(breakTime * 60);
       } else {
+        setSessionType("focus");
         setCurrentTime(focusTime * 60);
       }
     }
-
     console.log(currentTime);
 
     return () => clearInterval(interval);
-  }, [timer_is_running, currentTime, focusTime, breakTime]);
+  }, [isRunning, currentTime, focusTime, breakTime, sessionType]);
 
   // const inFocus = sessionDuration > breakTime;
 
   function handlePlayPauseClick() {
-    set_timer_is_running((prevState) => {
+    setIsRunning((prevState) => {
       return !prevState;
     });
   }
 
   // useInterval(() => {
-  //   if (timer_is_running) {
+  //   if (isRunning) {
   //     reduceTime();
   //   }
-  // }, timer_is_running && 1000);
+  // }, isRunning && 1000);
 
   // const reduceTime = () => {
   //   // if (!focusEnded()) {
@@ -84,19 +86,19 @@ function Pomodoro() {
   //   // }
   // };
 
-  // function handleFocusTimeChange(action) {
-  //   if (!timer_is_running) {
-  //     const newFocusTime = Math.max(eval(`${focusTime} ${action} 300000`), 0); // change by 5 minutes in milliseconds
-  //     setFocusTime(newFocusTime);
-  //   }
-  // }
+  function handleFocusTimeChange(action) {
+    if (!isRunning) {
+      const newFocusTime = Math.max(eval(`${focusTime} ${action} 300`), 0); // change by 5 minutes in milliseconds
+      setFocusTime(newFocusTime);
+    }
+  }
 
-  // function handleBreakTimeChange(action) {
-  //   if (!timer_is_running) {
-  //     const newBreakTime = Math.max(eval(`${breakTime} ${action} 60000`), 0); // change by 1 minute in milliseconds
-  //     setBreakTime(newBreakTime);
-  //   }
-  // }
+  function handleBreakTimeChange(action) {
+    if (!isRunning) {
+      const newBreakTime = Math.max(eval(`${breakTime} ${action} 60`), 0); // change by 1 minute in milliseconds
+      setBreakTime(newBreakTime);
+    }
+  }
 
   // const [displayVisible, setDisplayVisible] = useState(false);
 
@@ -133,8 +135,8 @@ function Pomodoro() {
 
   // Stop button handles stopping timer, turning off display and resetting session state
   // function handleStopClick() {
-  //   if (timer_is_running) {
-  //     set_timer_is_running(false);
+  //   if (isRunning) {
+  //     set_isRunning(false);
   //     setDisplayVisible(false);
   //     setSessionInProgress(false);
   //   }
@@ -143,7 +145,7 @@ function Pomodoro() {
   return (
     <div className="pomodoro">
       <div className="row">
-        {/* <Duration
+        <Duration
           handleTimeChange={handleFocusTimeChange}
           durationType={"Focus"}
           time={focusTime}
@@ -152,7 +154,7 @@ function Pomodoro() {
           handleTimeChange={handleBreakTimeChange}
           durationType={"Break"}
           time={breakTime}
-        /> */}
+        />
       </div>
       <div className="row">
         <div className="col">
@@ -171,8 +173,8 @@ function Pomodoro() {
               <span
                 className={classNames({
                   oi: true,
-                  "oi-media-play": !timer_is_running,
-                  "oi-media-pause": timer_is_running,
+                  "oi-media-play": !isRunning,
+                  "oi-media-pause": isRunning,
                 })}
               />
             </button>
@@ -195,7 +197,7 @@ function Pomodoro() {
           currentBreakTime={currentBreakTime}
           focusTime={focusTime}
           breakTime={breakTime}
-          timer_is_running={timer_is_running}
+          isRunning={isRunning}
           inFocus={inFocus}
         />
       )} */}
