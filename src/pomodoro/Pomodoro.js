@@ -14,6 +14,14 @@ function Pomodoro() {
   useEffect(() => {
     let interval;
 
+    const handleSessionSwitch = () => {
+      const nextSessionType = sessionType === "focus" ? "break" : "focus";
+      setSessionType(nextSessionType);
+      const nextSessionTime =
+        nextSessionType === "focus" ? focusTime : breakTime;
+      setCurrentTime(nextSessionTime * 60);
+    };
+
     if (isRunning && currentTime > 0) {
       interval = setInterval(() => {
         setCurrentTime((prevTime) => prevTime - 1);
@@ -25,13 +33,6 @@ function Pomodoro() {
 
     return () => clearInterval(interval);
   }, [isRunning, currentTime, focusTime, breakTime, sessionType]);
-
-  const handleSessionSwitch = () => {
-    const nextSessionType = sessionType === "focus" ? "break" : "focus";
-    setSessionType(nextSessionType);
-    const nextSessionTime = nextSessionType === "focus" ? focusTime : breakTime;
-    setCurrentTime(nextSessionTime * 60);
-  };
 
   const playSessionSwitchSound = () => {
     new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
