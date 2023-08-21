@@ -1,20 +1,16 @@
 import React from "react";
-// import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
 function SessionDisplay(props) {
   const { focusTime, breakTime, currentTime, sessionType } = props;
-
   const userSetTime = sessionType === "focus" ? focusTime : breakTime;
 
   function calculateElapsedTimePercentage(currentTime, totalSessionTime) {
     const remainingTime = totalSessionTime - currentTime;
-    const percentage = (remainingTime / totalSessionTime) * 100;
-    return percentage;
+    return (remainingTime / totalSessionTime) * 100;
   }
 
   const totalSessionTime =
     sessionType === "focus" ? focusTime * 60 : breakTime * 60;
-
   const elapsedTimePercentage = calculateElapsedTimePercentage(
     currentTime,
     totalSessionTime
@@ -23,11 +19,9 @@ function SessionDisplay(props) {
   function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-
-    const formattedMinutes = String(minutes).padStart(2, "0");
-    const formattedSeconds = String(remainingSeconds).padStart(2, "0");
-
-    return `${formattedMinutes}:${formattedSeconds}`;
+    return `${String(minutes).padStart(2, "0")}:${String(
+      remainingSeconds
+    ).padStart(2, "0")}`;
   }
 
   function capitalizeString(inputString) {
