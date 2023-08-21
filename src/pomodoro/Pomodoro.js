@@ -1,141 +1,85 @@
 import React, { useState, useEffect } from "react";
 import classNames from "../utils/class-names";
-import useInterval from "../utils/useInterval";
-import Duration from "./duration";
 import SessionDisplay from "./SessionDisplay";
+import DurationChanger from "./DurationChanger";
 
 function Pomodoro() {
-  // Timer starts out paused
-  const [timer_is_running, set_timer_is_running] = useState(false);
-  const [focusTime, setFocusTime] = useState(1500000);
-  const [breakTime, setBreakTime] = useState(300000);
-  const [session, setSession] = useState({
-    focus: 0,
-    break: 0,
-    inProgress: false,
-  });
-
-  useEffect(() => {
-    setSession((prevSession) => ({
-      ...prevSession,
-      focus: focusTime,
-    }));
-  }, [focusTime]);
-
-  useEffect(() => {
-    setSession((prevSession) => ({
-      ...prevSession,
-      break: breakTime,
-    }));
-  }, [breakTime]);
-
-  const focusEnded = () => {
-    return focusTime === 0 && inFocus();
-  };
-
-  const breakEnded = () => {
-    return breakTime === 0;
-  };
-
-  const inFocus = () => focusTime >= 0;
-
-  const reduceTime = () => {
-    const newTime = inFocus() ? session.focus - 1000 : session.break - 1000;
-    setSession((prevSession) => ({
-      ...prevSession,
-      [inFocus() ? "focus" : "break"]: newTime,
-    }));
-  };
-
-  useInterval(() => {
-    if (timer_is_running) {
-      reduceTime();
-    }
-  }, timer_is_running && 1000);
-
-  function handleFocusTimeChange(action) {
-    if (!timer_is_running) {
-      const newFocusTime = Math.max(eval(`${focusTime} ${action} 300000`), 0); // change by 5 minutes in milliseconds
-      setFocusTime(newFocusTime);
-    }
-  }
-
-  function handleBreakTimeChange(action) {
-    if (!timer_is_running) {
-      const newBreakTime = Math.max(eval(`${breakTime} ${action} 60000`), 0); // change by 1 minute in milliseconds
-      setBreakTime(newBreakTime);
-    }
-  }
-
-  function handlePlayPauseClick() {
-    set_timer_is_running((prevState) => {
-      return !prevState;
-    });
-    setSession((prevSession) => ({
-      ...prevSession,
-      inProgress: true,
-    }));
-  }
-
+  const [isRunning, setIsRunning] = useState(false);
+  const [focusTime, setFocusTime] = useState(25);
+  const [breakTime, setBreakTime] = useState(5);
+  const [currentTime, setCurrentTime] = useState(focusTime * 60);
+  const [sessionType, setSessionType] = useState("focus");
   const [displayVisible, setDisplayVisible] = useState(false);
 
   useEffect(() => {
-    if (timer_is_running && session.inProgress) {
-      setDisplayVisible(true);
+    let interval;
+
+    const handleSessionSwitch = () => {
+      const nextSessionType = sessionType === "focus" ? "break" : "focus";
+      setSessionType(nextSessionType);
+      const nextSessionTime =
+        nextSessionType === "focus" ? focusTime : breakTime;
+      setCurrentTime(nextSessionTime * 60);
+    };
+
+    if (isRunning && currentTime > 0) {
+      interval = setInterval(() => {
+        setCurrentTime((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (isRunning && currentTime === 0) {
+      handleSessionSwitch();
+      playSessionSwitchSound();
     }
-  }, [timer_is_running, session.inProgress]);
 
-  // Play Sound
-  // if (session.focusEnded() || session.breakEnded()) {
-  //   new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
-  // }
+    return () => clearInterval(interval);
+  }, [isRunning, currentTime, focusTime, breakTime, sessionType]);
 
-  // Restart Timer
-  // if (session.breakTime === -1000) {
-  //   updateSession();
-  // }
+  const playSessionSwitchSound = () => {
+    new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
+  };
 
-  // Uses to reset Session state when timer ends or stop is clicked
-  function updateSession() {
-    // setSession({
-    //   ...session,
-    //   focusTime: focusDuration,
-    //   breakTime: breakDuration,
-    // });
-  }
+  const handlePlayPauseClick = () => {
+    setIsRunning((prevState) => !prevState);
+    setDisplayVisible(true);
+  };
 
-  // Update Session state when changes to any duration occur
-  // useEffect(() => {
-  //   setSession((prevSession) => ({
-  //     ...prevSession,
-  //     focusTime: focusDuration,
-  //     breakTime: breakDuration,
-  //   }));
-  // }, [focusDuration, breakDuration]);
+  const handleTimeChange = (action, durationType) => {
+    if (!isRunning) {
+      const newTime = durationType === "focus" ? focusTime : breakTime;
+      const updatedTime = Math.max(eval(`${newTime} ${action} 5`), 0);
+      if (durationType === "focus") {
+        setFocusTime(updatedTime);
+      } else {
+        setBreakTime(updatedTime);
+      }
+    }
+  };
 
-  // Stop button handles stopping timer, turning off display and resetting session state
-  function handleStopClick() {
-    if (timer_is_running) {
-      set_timer_is_running(false);
+  const handleStopClick = () => {
+    if (isRunning) {
+      setIsRunning(false);
       setDisplayVisible(false);
-      updateSession();
+      setSessionType("focus");
+      setCurrentTime(focusTime * 60);
     }
-  }
+  };
 
   return (
     <div className="pomodoro">
+      {/* Duration Inputs */}
       <div className="row">
-        <Duration
-          handleTimeChange={handleFocusTimeChange}
-          durationType={"Focus"}
+        <DurationChanger
+          handleTimeChange={(time) => handleTimeChange(time, "focus")}
+          durationType="Focus"
           time={focusTime}
         />
-        <Duration
-          handleTimeChange={handleBreakTimeChange}
-          durationType={"Break"}
+        <DurationChanger
+          handleTimeChange={(time) => handleTimeChange(time, "break")}
+          durationType="Break"
           time={breakTime}
         />
       </div>
+      {/* Control Buttons */}
       <div className="row">
         <div className="col">
           <div
@@ -153,12 +97,11 @@ function Pomodoro() {
               <span
                 className={classNames({
                   oi: true,
-                  "oi-media-play": !timer_is_running,
-                  "oi-media-pause": timer_is_running,
+                  "oi-media-play": !isRunning,
+                  "oi-media-pause": isRunning,
                 })}
               />
             </button>
-            {/* TODO: Implement stopping the current focus or break session and disable when there is no active session */}
             <button
               type="button"
               className="btn btn-secondary"
@@ -173,12 +116,10 @@ function Pomodoro() {
       {/* Progress Bar */}
       {displayVisible && (
         <SessionDisplay
-          currentFocusTime={session.focus}
-          currentBreakTime={session.break}
+          currentTime={currentTime}
           focusTime={focusTime}
           breakTime={breakTime}
-          timer_is_running={timer_is_running}
-          inFocus={inFocus}
+          sessionType={sessionType}
         />
       )}
     </div>

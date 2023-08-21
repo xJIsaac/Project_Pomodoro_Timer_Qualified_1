@@ -1,32 +1,42 @@
 import React from "react";
-import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
 function SessionDisplay(props) {
-  const {
-    currentFocusTime,
-    currentBreakTime,
-    focusTime,
-    breakTime,
-    timer_is_running,
-    inFocus,
-  } = props;
+  const { focusTime, breakTime, currentTime, sessionType } = props;
+  const userSetTime = sessionType === "focus" ? focusTime : breakTime;
 
-  const userSetTime = inFocus() ? focusTime : breakTime;
-  const currentSessionTime = inFocus() ? currentFocusTime : currentBreakTime;
-  const sessionType = inFocus() ? "Focusing" : "On Break";
-  const elapsedTimePercentage = inFocus()
-    ? (focusTime - currentFocusTime) / focusTime
-    : (breakTime - currentBreakTime) / breakTime;
+  function calculateElapsedTimePercentage(currentTime, totalSessionTime) {
+    const remainingTime = totalSessionTime - currentTime;
+    return (remainingTime / totalSessionTime) * 100;
+  }
+
+  const totalSessionTime =
+    sessionType === "focus" ? focusTime * 60 : breakTime * 60;
+  const elapsedTimePercentage = calculateElapsedTimePercentage(
+    currentTime,
+    totalSessionTime
+  );
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(
+      remainingSeconds
+    ).padStart(2, "0")}`;
+  }
+
+  function capitalizeString(inputString) {
+    return inputString.charAt(0).toUpperCase() + inputString.slice(1);
+  }
 
   return (
     <div id="display">
       <div className="row mb-2">
         <div className="col">
           <h2 data-testid="session-title">
-            {sessionType} for {toMinAndSec(userSetTime)} minutes
+            {capitalizeString(sessionType)} for {userSetTime} minutes
           </h2>
           <p className="lead" data-testid="session-sub-title">
-            {toMinAndSec(currentSessionTime)} remaining
+            {formatTime(currentTime)} remaining
           </p>
         </div>
       </div>
@@ -38,8 +48,8 @@ function SessionDisplay(props) {
               role="progressbar"
               aria-valuemin="0"
               aria-valuemax="100"
-              aria-valuenow={elapsedTimePercentage * 100}
-              style={{ width: `${elapsedTimePercentage * 100}%` }}
+              aria-valuenow={elapsedTimePercentage}
+              style={{ width: `${elapsedTimePercentage}%` }}
             />
           </div>
         </div>

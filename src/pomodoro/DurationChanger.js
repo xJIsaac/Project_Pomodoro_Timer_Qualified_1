@@ -1,7 +1,7 @@
 import React from "react";
 import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
-function duration(props) {
+function DurationChanger(props) {
   const { handleTimeChange, durationType, time } = props;
 
   return (
@@ -9,7 +9,7 @@ function duration(props) {
       <div className="input-group input-group-lg mb-2">
         <span className="input-group-text" data-testid="time-break">
           {/* TODO: Update this text to display the current break session time */}
-          {durationType} Time: {toMinAndSec(time)}
+          {durationType} Time: {time} mins
         </span>
         <div className="input-group-append">
           {/* TODO: Implement decreasing break time and disable during a focus or break session*/}
@@ -36,4 +36,4 @@ function duration(props) {
   );
 }
 
-export default duration;
+export default DurationChanger;
