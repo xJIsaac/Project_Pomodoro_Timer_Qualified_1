@@ -38,13 +38,17 @@ function SessionDisplay(props) {
     return `${formattedMinutes}:${formattedSeconds}`;
   }
 
+  function capitalizeString(inputString) {
+    return inputString.charAt(0).toUpperCase() + inputString.slice(1);
+  }
+
   console.log(`Session Type: `, sessionType);
   return (
     <div id="display">
       <div className="row mb-2">
         <div className="col">
           <h2 data-testid="session-title">
-            {sessionType} for {userSetTime} minutes
+            {capitalizeString(sessionType)} for {userSetTime} minutes
           </h2>
           <p className="lead" data-testid="session-sub-title">
             {formatTime(currentTime)} remaining
