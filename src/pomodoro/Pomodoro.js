@@ -10,8 +10,6 @@ function Pomodoro() {
   const [breakTime, setBreakTime] = useState(5);
   const [currentTime, setCurrentTime] = useState(focusTime * 60); // in seconds
   const [sessionType, setSessionType] = useState("focus"); // 'focus' or 'break'
-  const [currentFocusTime, setCurrentFocusTime] = useState(0);
-  const [currentBreakTime, setCurrentBreakTime] = useState(0);
   const [displayVisible, setDisplayVisible] = useState(false);
 
   useEffect(() => {
