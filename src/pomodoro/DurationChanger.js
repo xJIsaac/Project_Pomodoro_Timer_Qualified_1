@@ -1,7 +1,7 @@
 import React from "react";
 import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
-function duration(props) {
+function DurationChanger(props) {
   const { handleTimeChange, durationType, time } = props;
 
   return (
@@ -36,4 +36,4 @@ function duration(props) {
   );
 }
 
-export default duration;
+export default DurationChanger;

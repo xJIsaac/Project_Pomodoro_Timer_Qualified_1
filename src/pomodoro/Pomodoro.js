@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classNames from "../utils/class-names";
 import SessionDisplay from "./SessionDisplay";
-import Duration from "./duration";
+import DurationChanger from "./DurationChanger";
 
 function Pomodoro() {
   const [isRunning, setIsRunning] = useState(false);
@@ -67,12 +67,12 @@ function Pomodoro() {
     <div className="pomodoro">
       {/* Duration Inputs */}
       <div className="row">
-        <Duration
+        <DurationChanger
           handleTimeChange={(time) => handleTimeChange(time, "focus")}
           durationType="Focus"
           time={focusTime}
         />
-        <Duration
+        <DurationChanger
           handleTimeChange={(time) => handleTimeChange(time, "break")}
           durationType="Break"
           time={breakTime}
