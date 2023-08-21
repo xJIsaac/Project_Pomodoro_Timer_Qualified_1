@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import classNames from "../utils/class-names";
-import useInterval from "../utils/useInterval";
 import Duration from "./duration";
 import SessionDisplay from "./SessionDisplay";
 
@@ -14,33 +13,6 @@ function Pomodoro() {
   const [currentFocusTime, setCurrentFocusTime] = useState(0);
   const [currentBreakTime, setCurrentBreakTime] = useState(0);
   const [displayVisible, setDisplayVisible] = useState(false);
-  // const [session, setSession] = useState({
-  //   focus: 0,
-  //   break: 0,
-  //   inProgress: false,
-  // });
-
-  // useEffect(() => {
-  //   setSession((prevSession) => ({
-  //     ...prevSession,
-  //     focus: focusTime,
-  //   }));
-  // }, [focusTime]);
-
-  // useEffect(() => {
-  //   setSession((prevSession) => ({
-  //     ...prevSession,
-  //     break: breakTime,
-  //   }));
-  // }, [breakTime]);
-
-  // const focusEnded = () => {
-  //   return currentFocusTime === 0 && inFocus();
-  // };
-
-  // const breakEnded = () => {
-  //   return currentBreakTime === 0;
-  // };
 
   useEffect(() => {
     let interval;
@@ -62,13 +34,9 @@ function Pomodoro() {
       // Play the sound
       new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
     }
-    console.log(currentTime);
-    console.log(displayVisible);
 
     return () => clearInterval(interval);
   }, [isRunning, currentTime, focusTime, breakTime, sessionType]);
-
-  // const inFocus = sessionDuration > breakTime;
 
   function handlePlayPauseClick() {
     setIsRunning((prevState) => {
@@ -76,21 +44,6 @@ function Pomodoro() {
     });
     setDisplayVisible(true);
   }
-
-  // useInterval(() => {
-  //   if (isRunning) {
-  //     reduceTime();
-  //   }
-  // }, isRunning && 1000);
-
-  // const reduceTime = () => {
-  //   // if (!focusEnded()) {
-  //   const newTime = Math.max(sessionDuration - 1000, 0);
-  //   console.log(newTime);
-  //   setSessionDuration(newTime);
-  //   console.log(`Session Time: ${sessionDuration}`);
-  //   // }
-  // };
 
   function handleFocusTimeChange(action) {
     if (!isRunning) {
@@ -105,37 +58,6 @@ function Pomodoro() {
       setBreakTime(newBreakTime);
     }
   }
-
-  // useEffect(() => {
-  //   setSessionDuration(focusTime + breakTime);
-  // }, [focusTime, breakTime]);
-
-  // useEffect(() => {
-  //   if (sessionInProgress) {
-  //     setDisplayVisible(true);
-  //   }
-  // }, [sessionInProgress]);
-
-  // useEffect(() => {
-  //   setCurrentFocusTime(() => {
-  //     return sessionDuration - breakTime;
-  //   });
-  //   setCurrentBreakTime(() => {});
-  // }, [breakTime]);
-
-  // Play Sound
-  // if (focusEnded() || breakEnded()) {
-  //   new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
-  // }
-
-  // // Restart Timer
-  // if (currentBreakTime === -1000) {
-  //   setSession((prevSession) => ({
-  //     ...prevSession,
-  //     focus: focusTime,
-  //     break: breakTime,
-  //   }));
-  // }
 
   // Stop button handles stopping timer, turning off display and resetting session state
   function handleStopClick() {
