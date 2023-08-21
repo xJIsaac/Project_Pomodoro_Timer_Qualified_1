@@ -1,16 +1,8 @@
 import React from "react";
-import toMinAndSec from "../utils/duration/toMinAndSec.js";
+// import toMinAndSec from "../utils/duration/toMinAndSec.js";
 
 function SessionDisplay(props) {
-  const {
-    currentFocusTime,
-    currentBreakTime,
-    focusTime,
-    breakTime,
-    currentTime,
-    timer_is_running,
-    sessionType,
-  } = props;
+  const { focusTime, breakTime, currentTime, sessionType } = props;
 
   const userSetTime = sessionType === "focus" ? focusTime : breakTime;
 
@@ -42,7 +34,6 @@ function SessionDisplay(props) {
     return inputString.charAt(0).toUpperCase() + inputString.slice(1);
   }
 
-  console.log(`Session Type: `, sessionType);
   return (
     <div id="display">
       <div className="row mb-2">

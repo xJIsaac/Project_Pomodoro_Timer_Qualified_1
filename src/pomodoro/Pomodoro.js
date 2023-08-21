@@ -120,12 +120,9 @@ function Pomodoro() {
       {/* Progress Bar */}
       {displayVisible && (
         <SessionDisplay
-          currentFocusTime={currentFocusTime}
-          currentBreakTime={currentBreakTime}
           currentTime={currentTime}
           focusTime={focusTime}
           breakTime={breakTime}
-          isRunning={isRunning}
           sessionType={sessionType}
         />
       )}
