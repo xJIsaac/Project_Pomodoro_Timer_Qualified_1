@@ -11,7 +11,8 @@ function SessionDisplay(props) {
     sessionType,
   } = props;
 
-  const userSetTime = sessionType ? focusTime : breakTime;
+  const userSetTime = sessionType === "focus" ? focusTime : breakTime;
+  console.log(`User set Time: ${userSetTime}`);
   const currentSessionTime = sessionType ? currentFocusTime : currentBreakTime;
   // const sessionType = sessionType ? "Focusing" : "On Break";
   const elapsedTimePercentage = sessionType
@@ -24,10 +25,10 @@ function SessionDisplay(props) {
       <div className="row mb-2">
         <div className="col">
           <h2 data-testid="session-title">
-            {sessionType} for {toMinAndSec(userSetTime)} minutes
+            {sessionType} for {userSetTime} minutes
           </h2>
           <p className="lead" data-testid="session-sub-title">
-            {toMinAndSec(currentSessionTime)} remaining
+            {currentSessionTime} remaining
           </p>
         </div>
       </div>
