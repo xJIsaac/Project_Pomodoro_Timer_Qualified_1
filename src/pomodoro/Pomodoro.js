@@ -13,6 +13,7 @@ function Pomodoro() {
   const [sessionType, setSessionType] = useState("focus"); // 'focus' or 'break'
   const [currentFocusTime, setCurrentFocusTime] = useState(0);
   const [currentBreakTime, setCurrentBreakTime] = useState(0);
+  const [displayVisible, setDisplayVisible] = useState(false);
   // const [session, setSession] = useState({
   //   focus: 0,
   //   break: 0,
@@ -59,6 +60,7 @@ function Pomodoro() {
       }
     }
     console.log(currentTime);
+    console.log(displayVisible);
 
     return () => clearInterval(interval);
   }, [isRunning, currentTime, focusTime, breakTime, sessionType]);
@@ -69,6 +71,7 @@ function Pomodoro() {
     setIsRunning((prevState) => {
       return !prevState;
     });
+    setDisplayVisible(true);
   }
 
   // useInterval(() => {
@@ -99,8 +102,6 @@ function Pomodoro() {
       setBreakTime(newBreakTime);
     }
   }
-
-  // const [displayVisible, setDisplayVisible] = useState(false);
 
   // useEffect(() => {
   //   setSessionDuration(focusTime + breakTime);
@@ -191,16 +192,16 @@ function Pomodoro() {
         </div>
       </div>
       {/* Progress Bar */}
-      {/* {displayVisible && (
+      {displayVisible && (
         <SessionDisplay
           currentFocusTime={currentFocusTime}
           currentBreakTime={currentBreakTime}
           focusTime={focusTime}
           breakTime={breakTime}
           isRunning={isRunning}
-          inFocus={inFocus}
+          sessionType={sessionType}
         />
-      )} */}
+      )}
     </div>
   );
 }
