@@ -11,14 +11,14 @@ function SessionDisplay(props) {
     inFocus,
   } = props;
 
-  const userSetTime = inFocus() ? focusTime : breakTime;
-  const currentSessionTime = inFocus() ? currentFocusTime : currentBreakTime;
-  const sessionType = inFocus() ? "Focusing" : "On Break";
-  const elapsedTimePercentage = inFocus()
+  const userSetTime = inFocus ? focusTime : breakTime;
+  const currentSessionTime = inFocus ? currentFocusTime : currentBreakTime;
+  const sessionType = inFocus ? "Focusing" : "On Break";
+  const elapsedTimePercentage = inFocus
     ? (focusTime - currentFocusTime) / focusTime
     : (breakTime - currentBreakTime) / breakTime;
 
-  console.log(`In Focus: `, inFocus());
+  console.log(`In Focus: `, inFocus);
   return (
     <div id="display">
       <div className="row mb-2">
