@@ -135,13 +135,14 @@ function Pomodoro() {
   // }
 
   // Stop button handles stopping timer, turning off display and resetting session state
-  // function handleStopClick() {
-  //   if (isRunning) {
-  //     set_isRunning(false);
-  //     setDisplayVisible(false);
-  //     setSessionInProgress(false);
-  //   }
-  // }
+  function handleStopClick() {
+    if (isRunning) {
+      setIsRunning(false);
+      setDisplayVisible(false);
+      setSessionType("focus"); // Reset session type to focus
+      setCurrentTime(focusTime * 60); // Reset current time to focus time
+    }
+  }
 
   return (
     <div className="pomodoro">
@@ -180,14 +181,14 @@ function Pomodoro() {
               />
             </button>
             {/* TODO: Implement stopping the current focus or break session and disable when there is no active session */}
-            {/* <button
+            <button
               type="button"
               className="btn btn-secondary"
               title="Stop the session"
               onClick={handleStopClick}
             >
               <span className="oi oi-media-stop" />
-            </button> */}
+            </button>
           </div>
         </div>
       </div>
