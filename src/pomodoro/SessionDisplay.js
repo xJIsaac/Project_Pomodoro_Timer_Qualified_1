@@ -7,17 +7,40 @@ function SessionDisplay(props) {
     currentBreakTime,
     focusTime,
     breakTime,
+    currentTime,
     timer_is_running,
     sessionType,
   } = props;
 
   const userSetTime = sessionType === "focus" ? focusTime : breakTime;
   console.log(`User set Time: ${userSetTime}`);
-  const currentSessionTime = sessionType ? currentFocusTime : currentBreakTime;
+  const currentSessionTime =
+    sessionType === "focus" ? currentFocusTime : currentBreakTime;
   // const sessionType = sessionType ? "Focusing" : "On Break";
-  const elapsedTimePercentage = sessionType
-    ? (focusTime - currentFocusTime) / focusTime
-    : (breakTime - currentBreakTime) / breakTime;
+
+  function calculateElapsedTimePercentage(currentTime, totalSessionTime) {
+    const remainingTime = totalSessionTime - currentTime;
+    const percentage = (remainingTime / totalSessionTime) * 100;
+    return percentage;
+  }
+
+  const totalSessionTime =
+    sessionType === "focus" ? focusTime * 60 : breakTime * 60;
+
+  const elapsedTimePercentage = calculateElapsedTimePercentage(
+    currentTime,
+    totalSessionTime
+  );
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(remainingSeconds).padStart(2, "0");
+
+    return `${formattedMinutes}:${formattedSeconds}`;
+  }
 
   console.log(`Session Type: `, sessionType);
   return (
@@ -28,7 +51,7 @@ function SessionDisplay(props) {
             {sessionType} for {userSetTime} minutes
           </h2>
           <p className="lead" data-testid="session-sub-title">
-            {currentSessionTime} remaining
+            {formatTime(currentTime)} remaining
           </p>
         </div>
       </div>
@@ -40,8 +63,8 @@ function SessionDisplay(props) {
               role="progressbar"
               aria-valuemin="0"
               aria-valuemax="100"
-              aria-valuenow={elapsedTimePercentage * 100}
-              style={{ width: `${elapsedTimePercentage * 100}%` }}
+              aria-valuenow={elapsedTimePercentage}
+              style={{ width: `${elapsedTimePercentage}%` }}
             />
           </div>
         </div>

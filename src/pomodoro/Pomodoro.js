@@ -196,6 +196,7 @@ function Pomodoro() {
         <SessionDisplay
           currentFocusTime={currentFocusTime}
           currentBreakTime={currentBreakTime}
+          currentTime={currentTime}
           focusTime={focusTime}
           breakTime={breakTime}
           isRunning={isRunning}
