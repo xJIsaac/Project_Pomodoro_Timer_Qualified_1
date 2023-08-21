@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import classNames from "../utils/class-names";
-import Duration from "./duration";
 import SessionDisplay from "./SessionDisplay";
+import Duration from "./duration";
 
 function Pomodoro() {
-  // Timer starts out paused
   const [isRunning, setIsRunning] = useState(false);
   const [focusTime, setFocusTime] = useState(25);
   const [breakTime, setBreakTime] = useState(5);
-  const [currentTime, setCurrentTime] = useState(focusTime * 60); // in seconds
-  const [sessionType, setSessionType] = useState("focus"); // 'focus' or 'break'
+  const [currentTime, setCurrentTime] = useState(focusTime * 60);
+  const [sessionType, setSessionType] = useState("focus");
   const [displayVisible, setDisplayVisible] = useState(false);
 
   useEffect(() => {
@@ -20,67 +19,66 @@ function Pomodoro() {
         setCurrentTime((prevTime) => prevTime - 1);
       }, 1000);
     } else if (isRunning && currentTime === 0) {
-      // Switch between focus and break times
-      if (sessionType === "focus") {
-        setSessionType("break");
-        setCurrentTime(breakTime * 60);
-      } else {
-        setSessionType("focus");
-        setCurrentTime(focusTime * 60);
-      }
-
-      // Play the sound
-      new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
+      handleSessionSwitch();
+      playSessionSwitchSound();
     }
 
     return () => clearInterval(interval);
   }, [isRunning, currentTime, focusTime, breakTime, sessionType]);
 
-  function handlePlayPauseClick() {
-    setIsRunning((prevState) => {
-      return !prevState;
-    });
+  const handleSessionSwitch = () => {
+    const nextSessionType = sessionType === "focus" ? "break" : "focus";
+    setSessionType(nextSessionType);
+    const nextSessionTime = nextSessionType === "focus" ? focusTime : breakTime;
+    setCurrentTime(nextSessionTime * 60);
+  };
+
+  const playSessionSwitchSound = () => {
+    new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
+  };
+
+  const handlePlayPauseClick = () => {
+    setIsRunning((prevState) => !prevState);
     setDisplayVisible(true);
-  }
+  };
 
-  function handleFocusTimeChange(action) {
+  const handleTimeChange = (action, durationType) => {
     if (!isRunning) {
-      const newFocusTime = Math.max(eval(`${focusTime} ${action} 5`), 0); // change by 5 minutes
-      setFocusTime(newFocusTime);
+      const newTime = durationType === "focus" ? focusTime : breakTime;
+      const updatedTime = Math.max(eval(`${newTime} ${action} 5`), 0);
+      if (durationType === "focus") {
+        setFocusTime(updatedTime);
+      } else {
+        setBreakTime(updatedTime);
+      }
     }
-  }
+  };
 
-  function handleBreakTimeChange(action) {
-    if (!isRunning) {
-      const newBreakTime = Math.max(eval(`${breakTime} ${action} 1`), 0); // change by 1 minute
-      setBreakTime(newBreakTime);
-    }
-  }
-
-  // Stop button handles stopping timer, turning off display and resetting session state
-  function handleStopClick() {
+  const handleStopClick = () => {
     if (isRunning) {
       setIsRunning(false);
       setDisplayVisible(false);
-      setSessionType("focus"); // Reset session type to focus
-      setCurrentTime(focusTime * 60); // Reset current time to focus time
+      setSessionType("focus");
+      setCurrentTime(focusTime * 60);
     }
-  }
+  };
 
   return (
     <div className="pomodoro">
+      {/* Duration Inputs */}
       <div className="row">
         <Duration
-          handleTimeChange={handleFocusTimeChange}
-          durationType={"Focus"}
+          handleTimeChange={(time) => handleTimeChange(time, "focus")}
+          durationType="Focus"
           time={focusTime}
         />
         <Duration
-          handleTimeChange={handleBreakTimeChange}
-          durationType={"Break"}
+          handleTimeChange={(time) => handleTimeChange(time, "break")}
+          durationType="Break"
           time={breakTime}
         />
       </div>
+      {/* Control Buttons */}
       <div className="row">
         <div className="col">
           <div
@@ -103,7 +101,6 @@ function Pomodoro() {
                 })}
               />
             </button>
-            {/* TODO: Implement stopping the current focus or break session and disable when there is no active session */}
             <button
               type="button"
               className="btn btn-secondary"
