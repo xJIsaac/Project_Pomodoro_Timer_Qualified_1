@@ -58,6 +58,9 @@ function Pomodoro() {
         setSessionType("focus");
         setCurrentTime(focusTime * 60);
       }
+
+      // Play the sound
+      new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
     }
     console.log(currentTime);
     console.log(displayVisible);
