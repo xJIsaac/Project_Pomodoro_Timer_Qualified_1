@@ -7,8 +7,8 @@ import SessionDisplay from "./SessionDisplay";
 function Pomodoro() {
   // Timer starts out paused
   const [isRunning, setIsRunning] = useState(false);
-  const [focusTime, setFocusTime] = useState(3);
-  const [breakTime, setBreakTime] = useState(3);
+  const [focusTime, setFocusTime] = useState(25);
+  const [breakTime, setBreakTime] = useState(5);
   const [currentTime, setCurrentTime] = useState(focusTime * 60); // in seconds
   const [sessionType, setSessionType] = useState("focus"); // 'focus' or 'break'
   const [currentFocusTime, setCurrentFocusTime] = useState(0);
@@ -91,14 +91,14 @@ function Pomodoro() {
 
   function handleFocusTimeChange(action) {
     if (!isRunning) {
-      const newFocusTime = Math.max(eval(`${focusTime} ${action} 300`), 0); // change by 5 minutes in milliseconds
+      const newFocusTime = Math.max(eval(`${focusTime} ${action} 5`), 0); // change by 5 minutes
       setFocusTime(newFocusTime);
     }
   }
 
   function handleBreakTimeChange(action) {
     if (!isRunning) {
-      const newBreakTime = Math.max(eval(`${breakTime} ${action} 60`), 0); // change by 1 minute in milliseconds
+      const newBreakTime = Math.max(eval(`${breakTime} ${action} 1`), 0); // change by 1 minute
       setBreakTime(newBreakTime);
     }
   }
